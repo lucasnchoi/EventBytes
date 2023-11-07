@@ -1,11 +1,13 @@
 import pytest
 from BBapp import app
 from BBapp.database import Database
+import datetime
 
 db = Database()
 
 @pytest.fixture
 def client(): #Peter
+    app.debug = True
     client = app.test_client()
     yield client
 
@@ -61,3 +63,34 @@ def test_login(client): #Nuova
     response = login(client, 'valid@utoronto.ca', 'password')
     assert b'user' in response.data, "Successful login did not redirect to user page or did not show expected content"
 
+
+
+def createEvent(client, name, type, time, size, location, details, booking, accommodation, requisite, contact, organizationHosted): 
+    return client.post('/create_event', data=dict(
+        name=name,
+        type=type,
+        time=time,
+        size=size,
+        location=location,
+        details=details,
+        booking=booking,
+        accommodation=accommodation,
+        requisite=requisite,
+        contact=contact,
+        organizationHosted=organizationHosted
+    ), follow_redirects=False)
+
+
+def test_createEvent(client):
+    """Test create_event route"""
+    db.delete_user('eventCreator@mail.utoronto.ca')
+    rv = signup(client, 'eventCreator@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', 'Developer Club', 'President')
+    rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2025, 11, 7, 15, 10), 10, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'No') #valid event creation for personal
+    assert rv.status_code == 200  and "Event created successfully" in str(rv.data), "Event creation failed"
+    rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2025, 11, 7, 15, 10), 10, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'Yes') #valid event creation for org
+    assert rv.status_code == 200  and "Event created successfully" in str(rv.data), "Event creation failed"
+    rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2021, 11, 7, 15, 10), 10, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'No') #invalid event creation time
+    assert "Events cannot be created in the past" in str(rv.data)
+    rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2025, 11, 7, 15, 10), -1, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'No') #invalid event creation size
+    assert "Attendee size cannot be negative" in str(rv.data)
+    db.delete_user('eventCreator@mail.utoronto.ca') #delete user after test

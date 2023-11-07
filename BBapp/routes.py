@@ -16,6 +16,10 @@ create_event_page = Blueprint('create_event_page', __name__, template_folder='te
 @create_event_page.route('/create_event', methods=['GET', 'POST'])
 def create_event():
     form = CreateEventForm()
+
+    if session.get('logged_in') != True:
+        return redirect(url_for('login_page.login'))
+    
     if request.method == 'POST':
         errors = []
         newEvent = {}
@@ -28,11 +32,11 @@ def create_event():
             
         
         if (len(errors) > 0):
-            print(errors)
             return render_template('createEvent.html', form=form, user = session['user'],errors=errors)
 
         creatingUser = session['user']
         newEvent['name'] = form.name.data
+        newEvent['type'] = form.type.data
         newEvent['location'] = form.location.data
         newEvent['time'] = form.time.data
         newEvent['details'] = form.details.data
@@ -47,7 +51,6 @@ def create_event():
         else:
             newEvent['organizationId'] = 0
 
-        
         newEvent['creatorId'] = session['user']['userID']
 
         try:
@@ -56,10 +59,8 @@ def create_event():
         except Exception as e:
             print(e)
             return render_template('createEvent.html', form=form, user = session['user'],errors=["Failed to create event - {}".format(str(e))], success=False)
-    
 
-    if session.get('logged_in') != True:
-        return redirect(url_for('login_page.login'))
+ 
     return render_template('createEvent.html', form=form, user = session['user'],errors=[],success = None)
 
 signup_page = Blueprint('signup_page', __name__, template_folder='templates')
