@@ -18,7 +18,8 @@ def create_event():
     if session.get('logged_in') != True:
         return redirect(url_for('login_page.login'))
     form = CreateEventForm()
-    return render_template('createEvent.html', form=form, errors=[])
+    orgHostForm = OrgHostForm()
+    return render_template('createEvent.html', form=form, orgHostForm = orgHostForm, user = session['user'],errors=[])
 
 signup_page = Blueprint('signup_page', __name__, template_folder='templates')
 
