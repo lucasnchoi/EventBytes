@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Login{% endblock %}
+
+{% block page_content %}
+    <h1 class="create-event-header">Create Event</h1>
+    {{ wtf.quick_form(form) }}
+    <button type="submit" class="btn btn-primary">Create Event</button>
+{% endblock %}

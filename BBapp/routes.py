@@ -12,6 +12,14 @@ def home():
     return render_template('index.html', current_time=datetime.utcnow())
 
 
+create_event_page = Blueprint('create_event_page', __name__, template_folder='templates')
+@create_event_page.route('/create_event', methods=['GET', 'POST'])
+def create_event():
+    if session.get('logged_in') != True:
+        return redirect(url_for('login_page.login'))
+    form = CreateEventForm()
+    return render_template('createEvent.html', form=form, errors=[])
+
 signup_page = Blueprint('signup_page', __name__, template_folder='templates')
 
 @signup_page.route('/signup', methods=['GET', 'POST'])
