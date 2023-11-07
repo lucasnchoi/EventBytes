@@ -5,9 +5,11 @@
 
 {% block page_content %}
     <h1 class="create-event-header">Create Event</h1>
+    <form method="post" action="/create_event">
     {{ wtf.quick_form(form) }}
     {% if user['orgID'] != 0 %}
         {{ wtf.form_field(orgHostForm.organizationHosted)}}
     {% endif %}
     <button type="submit" class="btn btn-primary">Create Event</button>
+    </form>
 {% endblock %}
