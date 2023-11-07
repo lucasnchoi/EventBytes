@@ -5,10 +5,33 @@
 
 {% block page_content %}
     <h1 class="create-event-header">Create Event</h1>
+    {%for err in errors%}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ err }}
+    </div>
+    {%endfor%}
+    {% if success %}
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Event created successfully!
+    </div>
+    {% endif %}
     <form method="post" action="/create_event">
-    {{ wtf.quick_form(form) }}
+    <!--I'm not using quickform because it does not allow custom styling of buttons, 
+        using quickform stops the external button to stop working-->
+    {{ wtf.form_field(form.name)}}
+    {{ wtf.form_field(form.type)}}
+    {{ wtf.form_field(form.time)}}
+    {{ wtf.form_field(form.size)}}
+    {{ wtf.form_field(form.location)}}
+    {{ wtf.form_field(form.details)}}
+    {{ wtf.form_field(form.booking)}}
+    {{ wtf.form_field(form.accommodation)}}
+    {{ wtf.form_field(form.requisite)}}
+    {{ wtf.form_field(form.contact)}}
     {% if user['orgID'] != 0 %}
-        {{ wtf.form_field(orgHostForm.organizationHosted)}}
+        {{ wtf.form_field(form.organizationHosted)}}
     {% endif %}
     <button type="submit" class="btn btn-primary">Create Event</button>
     </form>

@@ -12,7 +12,7 @@ db  = mysql.connector.connect(
 
 def createUserTable():
     mycursor = db.cursor()
-    mycursor.execute("CREATE TABLE IF NOT EXISTS users (firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), phone VARCHAR(255), password VARCHAR(255), orgID VARCHAR(255), orgRole VARCHAR(255), userID INT AUTO_INCREMENT PRIMARY KEY)")
+    mycursor.execute("CREATE TABLE IF NOT EXISTS users (firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), phone VARCHAR(255), password VARCHAR(255), orgID INT, orgRole VARCHAR(255), userID INT AUTO_INCREMENT PRIMARY KEY)")
 
 def createEventTable():
     
