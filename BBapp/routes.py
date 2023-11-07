@@ -54,7 +54,7 @@ def create_event():
         newEvent['creatorId'] = session['user']['userID']
 
         try:
-            print(newEvent)
+            db.insert_event(newEvent['name'], newEvent['type'], newEvent['location'], newEvent['time'], newEvent['details'], newEvent['booking'], newEvent['accommodation'], newEvent['requisite'], newEvent['size'], newEvent['contact'], newEvent['organizationId'], newEvent['creatorId'])
             return render_template('createEvent.html',  form=form, user = session['user'],errors=[], success=True)
         except Exception as e:
             print(e)

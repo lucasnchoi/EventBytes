@@ -84,11 +84,13 @@ def createEvent(client, name, type, time, size, location, details, booking, acco
 def test_createEvent(client):
     """Test create_event route"""
     db.delete_user('eventCreator@mail.utoronto.ca')
-    rv = signup(client, 'eventCreator@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', 'Developer Club', 'President')
+    rv = signup(client, 'eventCreator@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'Yes', 'Developer Club', 'President')
     rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2025, 11, 7, 15, 10), 10, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'No') #valid event creation for personal
     assert rv.status_code == 200  and "Event created successfully" in str(rv.data), "Event creation failed"
+    db.delete_event('testEvent', 0, 'testLocation', datetime.datetime(2025, 11, 7, 15, 10)) #delete event after test
     rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2025, 11, 7, 15, 10), 10, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'Yes') #valid event creation for org
     assert rv.status_code == 200  and "Event created successfully" in str(rv.data), "Event creation failed"
+    db.delete_event('testEvent', 1, 'testLocation', datetime.datetime(2025, 11, 7, 15, 10)) #delete event after test
     rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2021, 11, 7, 15, 10), 10, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'No') #invalid event creation time
     assert "Events cannot be created in the past" in str(rv.data)
     rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2025, 11, 7, 15, 10), -1, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'No') #invalid event creation size
