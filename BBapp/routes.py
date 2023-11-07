@@ -82,22 +82,35 @@ def login():
     if session.get('logged_in') != True:
         form = LoginForm()
         if form.validate_on_submit():
-            session['email'] = form.email.data
-            if 'utoronto' in session.get('email'):
+            #session['email'] = form.email.data
+            email = form.email.data
+            if 'utoronto' in email:
                 session['valid_email'] = True
             else:
                 session['valid_email'] = False
                 return redirect(url_for('login_page.login'))
             
-            session['password'] = form.password.data
-            if session.get('password') == 'password':
-                session['logged_in'] = True
-                return redirect(url_for('user_page.user'))
-            return redirect(url_for('login_page.login'))
+            fetchedUser = db.get_user(email)
+            if ( fetchedUser == []):
+                return redirect(url_for('login_page.login')) #user does not exist
+            else:
+                fetchedUser = fetchedUser[0]
+          
+            savedPassword = fetchedUser[4] #password is the 5th column in the table
+            if (savedPassword != form.password.data):
+                return redirect(url_for('login_page.login'))
+            
+            #valid login
+            session['user'] = User(fetchedUser[0], fetchedUser[1], fetchedUser[2], fetchedUser[3], fetchedUser[7], fetchedUser[5], fetchedUser[6]).dictionary()
+            session['email'] = fetchedUser[2]
+            session['logged_in'] = True
+            return redirect(url_for('user_page.user'))
+          
         return render_template('login.html', logged_in=session.get('logged_in'), form=form, email=session.get('email'), validEmail=session.get('valid_email'), current_time=datetime.utcnow())
     else:
         form = LogoutForm()
         if form.validate_on_submit():
+            session['user'] = None
             session['logged_in'] = False
             session['email'] = None
             session['password'] = None

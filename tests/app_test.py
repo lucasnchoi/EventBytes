@@ -1,5 +1,8 @@
 import pytest
 from BBapp import app
+from BBapp.database import Database
+
+db = Database()
 
 @pytest.fixture
 def client(): #Peter
@@ -27,10 +30,13 @@ def test_signup(client): #Peter
     assert rv.status_code == 200 and "Please use a valid UofT email address" in str(rv.data)
     rv = signup(client, 'test@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'Yes', '', '') #empty club name
     assert rv.status_code == 200 and "Please enter a club name" in str(rv.data)
-    rv = signup(client, 'test@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', '', '') #valid signup of non club representative
+    rv = signup(client, 'valid1Test@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', '', '') #valid signup of non club representative
     assert rv.status_code == 302 and rv.location == '/user'
-    rv = signup(client, 'test@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'Yes', 'Developer Club', 'President') #valid signup of club representative
+    db.delete_user('valid1Test@mail.utoronto.ca') 
+    rv = signup(client, 'valid2Test@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'Yes', 'Developer Club', 'President') #valid signup of club representative
     assert rv.status_code == 302 and rv.location == '/user'
+    db.delete_user('valid2Test@mail.utoronto.ca') 
+
 
 def login(client, email, password): #Nuova
     return client.post('/login', data=dict(
