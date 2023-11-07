@@ -15,6 +15,7 @@ class Database:
         command = "INSERT INTO users (firstName,lastName, email, phone, password, orgID, orgRole) VALUES (%s, %s, %s, %s, %s, %s, %s)" 
         self.mycursor.execute(command,(firstName,lastName, email, phone, password, orgID, orgRole))
         result = self.mycursor.fetchall() #incase later we want to see results
+        self.mydb.commit() 
         return result
         
     def insert_event(self, name, organization, location, time):

@@ -2,6 +2,7 @@ from flask import Flask, render_template, session, redirect, url_for, flash, Blu
 from datetime import datetime
 from  BBapp.forms import *
 from BBapp.database import Database
+from BBapp.user.user_class import User
 
 db = Database() 
 
@@ -36,7 +37,8 @@ def signup():
             return render_template('signup.html', form=form, roleForm=roleForm, errors=errors)
 
         signupUser['email'] = form.email.data
-        signupUser['name'] = form.name.data
+        signupUser['firstName'] = form.firstName.data
+        signupUser['lastName'] = form.lastName.data
         signupUser['phone'] = form.phone.data
         signupUser['password'] = form.password.data
 
@@ -44,15 +46,32 @@ def signup():
             signupUser['clubRepresentative'] = False
             signupUser['clubName'] = ""
             signupUser['clubRole'] = ""
+            orgId = 0 #default value for no organization
         else:
             signupUser['clubRepresentative'] = True
             signupUser['clubName'] = roleForm.clubName.data
             signupUser['clubRole'] = roleForm.clubRole.data
 
-        # call method to save user data to the database here
-        session['email'] = signupUser['email']
-        session['logged_in'] = True
-        return redirect(url_for('user_page.user'))
+            '''@Matt todo: get orgID from database given a club name, if it doesn't exist create an org and get the ID
+            orgID = db.get_organization(signupUser['clubName'])[0][0]
+            if orgID == None:
+                #create new org given a club name
+            '''
+            orgId = 1 #default value for now
+
+        try:
+            if db.get_user(signupUser['email']): #if user already exists
+                return render_template('signup.html', form=form, roleForm=roleForm, errors=["User with the same email already exists"])
+            db.insert_user(signupUser['firstName'],signupUser['lastName'], signupUser['email'], signupUser['phone'], signupUser['password'], str(orgId), signupUser['clubRole'])
+            fetchedUser = db.get_user(signupUser['email'])
+            registeredUserID = fetchedUser[-1][-1]
+            loggedInUser = User(signupUser['firstName'], signupUser['lastName'], signupUser['email'], signupUser['phone'], registeredUserID, orgId, signupUser['clubRole'])
+            session['user'] = loggedInUser.dictionary()
+            session['email'] = signupUser['email']
+            session['logged_in'] = True
+            return redirect(url_for('user_page.user'))
+        except Exception as e:
+            return render_template('signup.html', form=form, roleForm=roleForm, errors=["Failed to register user - {}".format(str(e))])
 
     return render_template('signup.html', form=form, roleForm=roleForm, errors=[])
 

@@ -17,11 +17,11 @@ class TestEventClass(unittest.TestCase):
         #insertion:
         results = self.database.insert_user("Peter","Jonathan","a@mail.utoronto.ca","64712345","password1234","1","President")
         self.database.mycursor.execute('SELECT last_insert_id() from users')
-        batch_id = list(self.database.mycursor)[0][0]
+        user_id = list(self.database.mycursor)[0][0]
 
         #get:
         results = self.database.get_user("a@mail.utoronto.ca")
-        self.assertEqual(results[-1],('Peter','Jonathan','a@mail.utoronto.ca','64712345','password1234','1','President',batch_id))
+        self.assertEqual(results[-1],('Peter','Jonathan','a@mail.utoronto.ca','64712345','password1234','1','President',user_id))
 
         """
         command = "ALTER TABLE users AUTO_INCREMENT = %s" #reset id counter
