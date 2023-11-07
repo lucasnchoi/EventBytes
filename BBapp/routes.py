@@ -69,7 +69,7 @@ def signup():
             session['user'] = loggedInUser.dictionary()
             session['email'] = signupUser['email']
             session['logged_in'] = True
-            return redirect(url_for('user_page.user'))
+            return redirect(url_for('event_page.events'))
         except Exception as e:
             return render_template('signup.html', form=form, roleForm=roleForm, errors=["Failed to register user - {}".format(str(e))])
 
