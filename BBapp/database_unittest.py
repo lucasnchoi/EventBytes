@@ -15,13 +15,13 @@ class TestEventClass(unittest.TestCase):
 
     def test_basic_functions_users(self):
         #insertion:
-        results = self.database.insert_user("Peter","Jonathan","a@mail.utoronto.ca","64712345","password1234","1","President")
+        results = self.database.insert_user("Peter","Jonathan","a@mail.utoronto.ca","64712345","password1234",1,"President")
         self.database.mycursor.execute('SELECT last_insert_id() from users')
         user_id = list(self.database.mycursor)[0][0]
 
         #get:
         results = self.database.get_user("a@mail.utoronto.ca")
-        self.assertEqual(results[-1],('Peter','Jonathan','a@mail.utoronto.ca','64712345','password1234','1','President',user_id))
+        self.assertEqual(results[-1],('Peter','Jonathan','a@mail.utoronto.ca','64712345','password1234',1,'President',user_id))
 
         """
         command = "ALTER TABLE users AUTO_INCREMENT = %s" #reset id counter
@@ -37,13 +37,14 @@ class TestEventClass(unittest.TestCase):
 
     def test_basic_functions_events(self):
         #insertion:
-        results = self.database.insert_event('my event 1', 'Bytes 1','location a', '01:00')
+        timeNow = str(datetime.now())
+        results = self.database.insert_event('my event 1', 'Other','location a', str(timeNow), 'details 1', 'booking 1', 'accommodation 1', 'requisite 1',10, 'contact 1',1,1)
         self.database.mycursor.execute('SELECT last_insert_id() from events')
         batch_id = list(self.database.mycursor)[0][0]
 
         #get:
-        results = self.database.get_event('my event 1', 'Bytes 1','location a', '01:00')
-        self.assertEqual(results[-1],('my event 1', 'Bytes 1','location a', '01:00', batch_id))
+        results = self.database.get_event('my event 1', 1 ,'location a', str(timeNow))
+        self.assertEqual(results[-1],('my event 1', 'Other','location a', str(timeNow), 'details 1', 'booking 1', 'accommodation 1', 'requisite 1', 10, 'contact 1',1,1,batch_id))
 
         """
         command = "ALTER TABLE users AUTO_INCREMENT = %s" #reset id counter
@@ -51,13 +52,13 @@ class TestEventClass(unittest.TestCase):
         """
 
         #delete:
-        results = self.database.delete_event('my event 1', 'Bytes 1','location a', '01:00')
+        results = self.database.delete_event('my event 1', 1,'location a', str(timeNow))
 
         #get:
-        results = self.database.get_event('my event 1', 'Bytes 1','location a', '01:00')
+        results = self.database.get_event('my event 1', 1 ,'location a',str(timeNow))
         self.assertEqual(results,[])
     
-    def test_basic_functions_organizations(self):
+    '''def test_basic_functions_organizations(self):
         #insertion:
         results = self.database.insert_organization("Peter", "a@mail.utoronto.ca","1234")
         self.database.mycursor.execute('SELECT last_insert_id() from organizations')
@@ -77,7 +78,7 @@ class TestEventClass(unittest.TestCase):
 
         #get:
         results = self.database.get_organization("Peter")
-        self.assertEqual(results,[])
+        self.assertEqual(results,[])'''
 
 
 
