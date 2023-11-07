@@ -20,7 +20,8 @@ block content %}
     <form method="post" action="/signup">
     <div style="width: 300px">
       {{ wtf.form_field(form.email) }}
-      {{ wtf.form_field(form.name) }}
+      {{ wtf.form_field(form.firstName) }}
+      {{ wtf.form_field(form.lastName) }}
       {{wtf.form_field(form.phone) }} 
       {{ wtf.form_field(form.password) }} 
       {{wtf.form_field(form.confirmPassword) }} 

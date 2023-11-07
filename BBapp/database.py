@@ -2,19 +2,20 @@ import mysql.connector
 class Database:
     def __init__(self):
         self.mydb = mysql.connector.connect(
-        host="sql9.freesqldatabase.com",
-        user="sql9655237",
-        password="bjjEIeT3tm",
-        database = "sql9655237",
+        host="sql5.freesqldatabase.com",
+        user="sql5659789",
+        password="ELhaR4pm34",
+        database = "sql5659789",
         port = "3306"
         )
 
         self.mycursor = self.mydb.cursor()
     
-    def insert_user(self, username, email, password): #enforce unique uoft email
-        command = "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)" 
-        self.mycursor.execute(command,(username,email,password))
+    def insert_user(self, firstName,lastName, email, phone, password, orgID, orgRole): #enforce unique uoft email
+        command = "INSERT INTO users (firstName,lastName, email, phone, password, orgID, orgRole) VALUES (%s, %s, %s, %s, %s, %s, %s)" 
+        self.mycursor.execute(command,(firstName,lastName, email, phone, password, orgID, orgRole))
         result = self.mycursor.fetchall() #incase later we want to see results
+        self.mydb.commit() 
         return result
         
     def insert_event(self, name, organization, location, time):

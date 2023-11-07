@@ -7,7 +7,7 @@ class event:
 #MANDATORY fields: name, type, date/time, place, and details
 #These must be provided by user before an event can be created. (Inform user on front end, * for mandatory fields)
 
-    def __init__(self, event_name, event_type, dateTime, location, description, registeration=None, accommodation=None, requirement=None, size=None, additional_contact=None):
+    def __init__(self,event_name, event_type, dateTime, location, description, registeration=None, accommodation=None, requirement=None, size=None, additional_contact=None,eventId='',creatorId='',organizationId=''):
         self._name = event_name                  #str
         self.type = event_type                   #str   front-end: maybe have tags for user to select when creating event?
         self._time = dateTime                    #datetime obj
@@ -16,6 +16,9 @@ class event:
         self._booking = registeration            #front-end: let user select Y/N. If Y, make them input booking instructions as string. If N, pass reservation as "Not required" or just dont provide it during initialization
         self.accommodation = accommodation       #str
         self._requisite = requirement            #str
+        self.id = eventId
+        self.creatorId = creatorId
+        self.organizationId = organizationId
         if size is None:
             self.size = "no limit"        
         else:
@@ -33,6 +36,9 @@ class event:
     def to_dict(self):
 
         event_dict = {
+           "id": self.id,
+           "creatorId": self.creatorId,
+           "organizationId": self.organizationId,
            "name": self._name,
            "type": self.type,
            "time": self._time.strftime("%Y-%m-%d %H:%M"),

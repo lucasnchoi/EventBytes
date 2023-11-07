@@ -8,7 +8,8 @@ from wtforms.validators import DataRequired, Email
 
 class SignupForm(FlaskForm):
     email = StringField('UofT Email Address', validators=[DataRequired(), Email()])
-    name = StringField('Name', validators=[DataRequired()])
+    firstName = StringField('First Name', validators=[DataRequired()])
+    lastName = StringField('Last Name', validators=[DataRequired()])
     phone = StringField('Phone Number', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirmPassword = PasswordField('Confirm Password', validators=[DataRequired()])
