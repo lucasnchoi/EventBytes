@@ -126,4 +126,12 @@ def events():
 user_page = Blueprint('user_page', __name__, template_folder='templates')
 @user_page.route('/user')
 def user():
-    return render_template('user.html', first_name= session['user'].get("firstname"), last_name=session['user'].get("lastname"), phone=session['user'].get("phone"), logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+    if session.get('logged_in') == True:
+        firstName = session['user'].get("firstname")
+        lastName = session['user'].get("lastname")
+        phone = session['user'].get("phone")
+    else:
+        firstName = None
+        lastName = None
+        phone = None
+    return render_template('user.html', first_name=firstName, last_name=lastName, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())

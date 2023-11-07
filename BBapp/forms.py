@@ -23,7 +23,7 @@ class RoleForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('UofT Email Address', validators=[Email()])
-    password = StringField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
 
 class LogoutForm(FlaskForm):
