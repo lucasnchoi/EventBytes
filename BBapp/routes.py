@@ -121,7 +121,7 @@ def signup():
             session['user'] = loggedInUser.dictionary()
             session['email'] = signupUser['email']
             session['logged_in'] = True
-            return redirect(url_for('user_page.user'))
+            return redirect(url_for('events_page.events'))
         except Exception as e:
             return render_template('signup.html', form=form, roleForm=roleForm, errors=["Failed to register user - {}".format(str(e))])
 
@@ -156,7 +156,7 @@ def login():
             session['user'] = User(fetchedUser[0], fetchedUser[1], fetchedUser[2], fetchedUser[3], fetchedUser[7], fetchedUser[5], fetchedUser[6]).dictionary()
             session['email'] = fetchedUser[2]
             session['logged_in'] = True
-            return redirect(url_for('user_page.user'))
+            return redirect(url_for('events_page.events'))
           
         return render_template('login.html', logged_in=session.get('logged_in'), form=form, email=session.get('email'), validEmail=session.get('valid_email'), current_time=datetime.utcnow())
     else:
@@ -170,7 +170,20 @@ def login():
             return redirect(url_for('login_page.login'))
         return render_template('login.html', logged_in=session.get('logged_in'), form=form, email=session.get('email'), current_time=datetime.utcnow())
 
+events_page = Blueprint('events_page', __name__, template_folder='templates')
+@events_page.route('/events')
+def events():
+    return render_template('events.html', logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+
 user_page = Blueprint('user_page', __name__, template_folder='templates')
 @user_page.route('/user')
 def user():
-    return render_template('user.html', logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+    if session.get('logged_in') == True:
+        firstName = session['user'].get("firstname")
+        lastName = session['user'].get("lastname")
+        phone = session['user'].get("phone")
+    else:
+        firstName = None
+        lastName = None
+        phone = None
+    return render_template('user.html', first_name=firstName, last_name=lastName, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())

@@ -33,10 +33,10 @@ def test_signup(client): #Peter
     rv = signup(client, 'test@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'Yes', '', '') #empty club name
     assert rv.status_code == 200 and "Please enter a club name" in str(rv.data)
     rv = signup(client, 'valid1Test@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', '', '') #valid signup of non club representative
-    assert rv.status_code == 302 and rv.location == '/user'
+    assert rv.status_code == 302 and rv.location == '/events'
     db.delete_user('valid1Test@mail.utoronto.ca') 
     rv = signup(client, 'valid2Test@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'Yes', 'Developer Club', 'President') #valid signup of club representative
-    assert rv.status_code == 302 and rv.location == '/user'
+    assert rv.status_code == 302 and rv.location == '/events'
     db.delete_user('valid2Test@mail.utoronto.ca') 
 
 
@@ -64,6 +64,28 @@ def test_login(client): #Nuova
     assert b'user' in response.data, "Successful login did not redirect to user page or did not show expected content"
 
 
+def test_event(client):
+    """Test event page"""
+    rv = client.get('/events')
+    assert rv.status_code == 200 and "Please log in first." in str(rv.data), "Event page accessible without logging in"
+    rv = signup(client, 'eventTest@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', '', '')
+    rv = client.get('/events')
+    assert rv.status_code == 200 and "Events Dashboard" in str(rv.data), "Event page unaccessible after logging in"
+    db.delete_user('eventTest@mail.utoronto.ca') 
+
+def test_user(client):
+    """Test user page"""
+    db.delete_user('userTest@mail.utoronto.ca') 
+    rv = client.get('/user')
+    assert rv.status_code == 200 and "Please log in first." in str(rv.data), "User page accessible without logging in"
+    rv = signup(client, 'userTest@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', '', '')
+    rv = client.get('/user')
+    assert rv.status_code == 200, "User page unaccessible after logging in"
+    print(str(rv.data))
+    assert "test lastName" and "User Profile" in str(rv.data), "Incorrect user profile names"
+    assert "email:" in str(rv.data), "Incorrect user profile email"
+    assert "phone: 1234567890" in str(rv.data), "Incorrect user profile phone"
+    db.delete_user('userTest@mail.utoronto.ca') 
 
 def createEvent(client, name, type, time, size, location, details, booking, accommodation, requisite, contact, organizationHosted): 
     return client.post('/create_event', data=dict(
