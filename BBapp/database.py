@@ -18,11 +18,13 @@ class Database:
         self.mydb.commit() 
         return result
         
-    def insert_event(self, name, organization, location, time):
-        command = "INSERT INTO events (name, organization, location, time) VALUES (%s, %s, %s, %s)" 
-        self.mycursor.execute(command,(name,organization,location,time))
-        result = self.mycursor.fetchall() #incase later we want to see results
-        return result
+    def insert_event(self, name, type, location, time, details, booking, accommodation, requisite, size, contact, organizationId, creatorId): 
+        command = "INSERT INTO events (name, type, location, time, details, booking, accommodation, requisite, size, contact, organizationId, creatorId) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"
+        self.mycursor.execute(command,(name, type, location, time, details, booking, accommodation, requisite, size, contact, organizationId, creatorId))
+        self.mycursor.execute('SELECT last_insert_id() from events') #get the id of the event we just inserted
+        batch_id = list(self.mycursor)[0][0]
+        self.mydb.commit()
+        return batch_id
 
     def insert_organization(self, name, email, password): #enforce unique names
         command = "INSERT INTO organizations (name, email, password) VALUES (%s, %s, %s)" 
@@ -35,9 +37,9 @@ class Database:
         self.mycursor.execute(command,(email,))
         self.mydb.commit()
         
-    def delete_event(self, name, organization, location, time): #assume events may have same names, eg recurring meetings
-        command = "DELETE FROM events WHERE name = %s AND organization = %s AND location = %s AND time = %s" 
-        self.mycursor.execute(command,(name,organization,location,time))
+    def delete_event(self, name, organizationId, location, time): #assume events may have same names, eg recurring meetings
+        command = "DELETE FROM events WHERE name = %s AND organizationId = %s AND location = %s AND time = %s" 
+        self.mycursor.execute(command,(name,organizationId,location,time))
         self.mydb.commit()
 
     def delete_organization(self, name): 
@@ -51,9 +53,9 @@ class Database:
         result = self.mycursor.fetchall()
         return result 
 
-    def get_event(self, name, organization, location, time):
-        command = "SELECT * FROM events WHERE name = %s AND organization = %s AND location = %s AND time = %s" 
-        self.mycursor.execute(command,(name,organization,location,time))
+    def get_event(self, name, organizationId, location, time):
+        command = "SELECT * FROM events WHERE name = %s AND organizationId = %s AND location = %s AND time = %s" 
+        self.mycursor.execute(command,(name,organizationId,location,time))
         result = self.mycursor.fetchall()
         return result 
 

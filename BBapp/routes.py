@@ -12,6 +12,57 @@ def home():
     return render_template('index.html', current_time=datetime.utcnow())
 
 
+create_event_page = Blueprint('create_event_page', __name__, template_folder='templates')
+@create_event_page.route('/create_event', methods=['GET', 'POST'])
+def create_event():
+    form = CreateEventForm()
+
+    if session.get('logged_in') != True:
+        return redirect(url_for('login_page.login'))
+    
+    if request.method == 'POST':
+        errors = []
+        newEvent = {}
+
+        if form.time.data < datetime.now():
+            errors.append("Events cannot be created in the past")
+        
+        if form.size.data < 0:
+            errors.append("Attendee size cannot be negative")
+            
+        
+        if (len(errors) > 0):
+            return render_template('createEvent.html', form=form, user = session['user'],errors=errors)
+
+        creatingUser = session['user']
+        newEvent['name'] = form.name.data
+        newEvent['type'] = form.type.data
+        newEvent['location'] = form.location.data
+        newEvent['time'] = form.time.data
+        newEvent['details'] = form.details.data
+        newEvent['booking'] = form.booking.data
+        newEvent['accommodation'] = form.accommodation.data
+        newEvent['requisite'] = form.requisite.data
+        newEvent['size'] = form.size.data
+        newEvent['contact'] = form.contact.data
+
+        if (creatingUser['orgID'] != 0 and form.organizationHosted.data == 'Yes'): #if user is an org rep and wants to host an event for that organization
+            newEvent['organizationId'] = creatingUser['orgID']
+        else:
+            newEvent['organizationId'] = 0
+
+        newEvent['creatorId'] = session['user']['userID']
+
+        try:
+            db.insert_event(newEvent['name'], newEvent['type'], newEvent['location'], newEvent['time'], newEvent['details'], newEvent['booking'], newEvent['accommodation'], newEvent['requisite'], newEvent['size'], newEvent['contact'], newEvent['organizationId'], newEvent['creatorId'])
+            return render_template('createEvent.html',  form=form, user = session['user'],errors=[], success=True)
+        except Exception as e:
+            print(e)
+            return render_template('createEvent.html', form=form, user = session['user'],errors=["Failed to create event - {}".format(str(e))], success=False)
+
+ 
+    return render_template('createEvent.html', form=form, user = session['user'],errors=[],success = None)
+
 signup_page = Blueprint('signup_page', __name__, template_folder='templates')
 
 @signup_page.route('/signup', methods=['GET', 'POST'])
@@ -21,7 +72,7 @@ def signup():
 
     if request.method == 'POST':
         errors = []
-        signupUser = {}  # For now, just store in a dictionary; change this to User object later
+        signupUser = {}  
 
         if "utoronto" not in form.email.data:
             errors.append("Please use a valid UofT email address")
@@ -56,13 +107,14 @@ def signup():
             orgID = db.get_organization(signupUser['clubName'])[0][0]
             if orgID == None:
                 #create new org given a club name
+                #get generated orgID
             '''
             orgId = 1 #default value for now
 
         try:
             if db.get_user(signupUser['email']): #if user already exists
                 return render_template('signup.html', form=form, roleForm=roleForm, errors=["User with the same email already exists"])
-            db.insert_user(signupUser['firstName'],signupUser['lastName'], signupUser['email'], signupUser['phone'], signupUser['password'], str(orgId), signupUser['clubRole'])
+            db.insert_user(signupUser['firstName'],signupUser['lastName'], signupUser['email'], signupUser['phone'], signupUser['password'],orgId, signupUser['clubRole'])
             fetchedUser = db.get_user(signupUser['email'])
             registeredUserID = fetchedUser[-1][-1]
             loggedInUser = User(signupUser['firstName'], signupUser['lastName'], signupUser['email'], signupUser['phone'], registeredUserID, orgId, signupUser['clubRole'])
