@@ -1,7 +1,7 @@
 import pytest
-from user_class import user
+from user_class import User
 
-testUser = user("test", "user", "test.user@mail.utoronto.ca", "1234567890", 1, 1, "President")
+testUser = User("test", "user", "test.user@mail.utoronto.ca", "1234567890", 1, 1, "President")
 
 def test_user_dictionary(): #Lucas 
     dict = testUser.dictionary()
