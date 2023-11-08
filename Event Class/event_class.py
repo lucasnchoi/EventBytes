@@ -18,7 +18,7 @@ class event:
         self._requisite = requirement            #str
         self.id = eventId
         self.creatorId = creatorId
-        self.organizationId = organizationId
+        self.organizationId = organizationId      #by default if 0, it means the event is not hosted by any organization 
         if size is None:
             self.size = "no limit"        
         else:
