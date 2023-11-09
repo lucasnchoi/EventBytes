@@ -1,8 +1,9 @@
 from flask import Flask, render_template, session, redirect, url_for, flash, Blueprint, request
 from datetime import datetime
-from  BBapp.forms import *
+from BBapp.forms import *
 from BBapp.database import Database
-from BBapp.user.user_class import User
+from BBapp.user import User
+
 
 db = Database() 
 

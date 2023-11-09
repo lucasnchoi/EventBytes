@@ -1,7 +1,7 @@
 import pytest
+import datetime
 from BBapp import app
 from BBapp.database import Database
-import datetime
 
 db = Database()
 

@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime
-from database import Database  
+from BBapp.database import Database  
 
 class TestEventClass(unittest.TestCase):
 
