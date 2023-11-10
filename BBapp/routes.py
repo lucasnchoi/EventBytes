@@ -9,7 +9,13 @@ db = Database()
 home_page = Blueprint('home_page', __name__, template_folder='templates')
 @home_page.route('/')
 def home():
-    return render_template('index.html', current_time=datetime.utcnow())
+    filtered_events = []  # Initialize as empty if no search query is present
+    search_query = request.args.get('query')
+
+    if search_query:
+        filtered_events = db.search_events(search_query)
+
+    return render_template('index.html', current_time=datetime.utcnow(), filtered_events=filtered_events, search_query=search_query)
 
 
 create_event_page = Blueprint('create_event_page', __name__, template_folder='templates')
@@ -191,9 +197,28 @@ def user():
 
 search_page = Blueprint('search_page', __name__, template_folder='templates')
 
+
 @search_page.route('/search', methods=['GET'])
 def search():
     search_query = request.args.get('query')
     events = db.search_events(search_query)
-    return render_template('search_results.html', events=events, query=search_query)
+    return render_template('index.html', current_time=datetime.utcnow(), filtered_events=events, search_query=search_query)
 
+
+filter_date = Blueprint('filter_date', __name__, template_folder='templates')
+
+
+@search_page.route('/filter', methods=['GET'])
+def filter():
+   
+    selected_date = request.args.get('date')  # Get the selected date from the request
+
+    if selected_date:
+ 
+        events = db.get_events_for_selected_date(selected_date)
+    else:
+        # Handle the case where no date is provided
+        events = []
+
+    # Render a template to display the events
+    return render_template('events_for_selected_date.html', events=events, selected_date=selected_date)

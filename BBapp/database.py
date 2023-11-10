@@ -82,3 +82,17 @@ class Database:
         events = self.mycursor.fetchall()
         return events
 
+
+    def get_events_for_selected_date(self, selected_date):
+        # Define the SQL query to select events on the selected date, ordered by time
+        command = """
+        SELECT e.*
+        FROM events AS e
+        WHERE DATE(e.time) = %s
+        ORDER BY TIME(e.time) ASC
+        """
+
+        self.mycursor.execute(command, (selected_date,))
+        events = self.mycursor.fetchall()
+
+        return events
