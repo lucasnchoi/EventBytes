@@ -12,3 +12,6 @@ app.register_blueprint(home_page)
 app.register_blueprint(login_page)
 app.register_blueprint(user_page)
 app.register_blueprint(signup_page)
+app.register_blueprint(events_page)
+app.register_blueprint(create_event_page)
+

@@ -1,4 +1,4 @@
-class user:
+class User:
     #constructor
     def __init__(self, firstname, lastname, email, phone, userID, orgID, orgRole):
         self.firstname = firstname 
