@@ -11,6 +11,8 @@
             <br>
             <div style="overflow: scroll; width: 25%; height: 200px; text-overflow: clip; white-space: nowrap;">
                 <ul>
+                    {% if events %}
+
                     {% for event in events %}
                     <li>{{event.name}}</li>
                     <ul>
@@ -18,8 +20,9 @@
                     <li>Location: {{event.place}}</li>
                     </ul>
                     <br>
-                {% endfor %}
+                    {% endfor %}
                 </ul>
+                {%endif%}
             </div>
         </div>
         {% else %}

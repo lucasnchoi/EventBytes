@@ -175,14 +175,17 @@ def login():
 events_page = Blueprint('events_page', __name__, template_folder='templates')
 @events_page.route('/events')
 def events():
+    events_list = []
     if session.get('logged_in') == True:
-        events_list = []
         fetchedUserCreatedEvents = db.get_user_created_events(session['user'].get("userID"), datetime.utcnow())
-        for event_iter in fetchedUserCreatedEvents:
-            event = Event(event_iter[0], event_iter[1], event_iter[2], event_iter[3], event_iter[4], event_iter[5], event_iter[6], event_iter[7], event_iter[8], event_iter[9], event_iter[10], event_iter[11], event_iter[12])
-            if (event.get_id() != -1): #check if the event was properly fetched
-                events_list.append(event.to_dict())
-    return render_template('events.html', events = events_list, user_id = session['user'].get("userID"), logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+        if fetchedUserCreatedEvents != []:
+            for event_iter in fetchedUserCreatedEvents:
+                event = Event(event_iter[0], event_iter[1], event_iter[2], event_iter[3], event_iter[4], event_iter[5], event_iter[6], event_iter[7], event_iter[8], event_iter[9], event_iter[10], event_iter[11], event_iter[12])
+                if (event.get_id() != -1): #check if the event was properly fetched
+                    events_list.append(event.to_dict())
+        else:
+            events_list = False
+    return render_template('events.html', events = events_list, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
 
 user_page = Blueprint('user_page', __name__, template_folder='templates')
 @user_page.route('/user')
