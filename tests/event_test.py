@@ -11,7 +11,7 @@ class TestEventClass(unittest.TestCase):
             event_type="Test Type",
             dateTime=datetime(2023, 10, 21, 10, 30),
             location="Test Location",
-            description="Test Description"
+            details="Test Description"
         )
 
     def test_to_dict(self):
