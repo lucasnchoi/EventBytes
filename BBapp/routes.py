@@ -178,8 +178,6 @@ def events():
     if session.get('logged_in') == True:
         events_list = []
         fetchedUserCreatedEvents = db.get_user_created_events(session['user'].get("userID"), datetime.utcnow())
-        print(fetchedUserCreatedEvents)
-        print(len(fetchedUserCreatedEvents))
         for event_iter in fetchedUserCreatedEvents:
             event = Event(event_iter[0], event_iter[1], event_iter[2], event_iter[3], event_iter[4], event_iter[5], event_iter[6], event_iter[7], event_iter[8], event_iter[9], event_iter[10], event_iter[11], event_iter[12])
             if (event.get_id() != -1): #check if the event was properly fetched
