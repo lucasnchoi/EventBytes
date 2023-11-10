@@ -174,6 +174,8 @@ def login():
 events_page = Blueprint('events_page', __name__, template_folder='templates')
 @events_page.route('/events')
 def events():
+    #if session.get('logged_in') == True:
+        
     return render_template('events.html', logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
 
 user_page = Blueprint('user_page', __name__, template_folder='templates')
