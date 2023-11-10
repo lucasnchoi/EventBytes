@@ -187,3 +187,13 @@ def user():
         lastName = None
         phone = None
     return render_template('user.html', first_name=firstName, last_name=lastName, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+
+
+search_page = Blueprint('search_page', __name__, template_folder='templates')
+
+@search_page.route('/search', methods=['GET'])
+def search():
+    search_query = request.args.get('query')
+    events = db.search_events(search_query)
+    return render_template('search_results.html', events=events, query=search_query)
+

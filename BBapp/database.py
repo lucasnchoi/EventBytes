@@ -65,5 +65,20 @@ class Database:
         result = self.mycursor.fetchall()
         return result 
     
-    
+    def search_events(self, search_query):
+        #search_query can be either event name or organization name as indicated by user within the search bar
+       
+        command = """
+        SELECT e.*
+        FROM events AS e
+        LEFT JOIN organizations AS o ON e.organizationId = o.orgID
+        WHERE e.name LIKE %s OR o.name LIKE %s
+        """ 
+        #since we do not expect user to know orgID, they can input name and we will make an additional subquery in organization table ^^^
+
+        search_param = (f"%{search_query}", f"%{search_query}")
+
+        self.mycursor.execute(command, search_param)
+        events = self.mycursor.fetchall()
+        return events
 
