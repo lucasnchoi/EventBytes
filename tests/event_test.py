@@ -1,12 +1,12 @@
 import unittest
-from datetime import datetime
-from event_class import event  
+from datetime import datetime 
+from BBapp.event import Event 
 
 class TestEventClass(unittest.TestCase):
 
     def setUp(self):
         # Create an instance of event for testing
-        self.event = event(
+        self.event = Event(
             event_name="Test Name",
             event_type="Test Type",
             dateTime=datetime(2023, 10, 21, 10, 30),

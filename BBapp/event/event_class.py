@@ -2,7 +2,7 @@ from datetime import datetime
 
 
 
-class event:
+class Event:
 
 #MANDATORY fields: name, type, date/time, place, and details
 #These must be provided by user before an event can be created. (Inform user on front end, * for mandatory fields)
