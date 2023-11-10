@@ -26,10 +26,11 @@ class Database:
         self.mydb.commit()
         return batch_id
 
-    def insert_organization(self, name, email, password): #enforce unique names
-        command = "INSERT INTO organizations (name, email, password) VALUES (%s, %s, %s)" 
-        self.mycursor.execute(command,(name,email,password))
+    def insert_organization(self, name, email, description, org_type, password): #enforce unique names
+        command = "INSERT INTO organizations (name, email, description, organization_type, password) VALUES (%s, %s, %s, %s, %s)" 
+        self.mycursor.execute(command,(name,email,description, org_type, password))
         result = self.mycursor.fetchall() #incase later we want to see results
+        self.mydb.commit()
         return result
 
     def delete_user(self, email): 
@@ -65,5 +66,123 @@ class Database:
         result = self.mycursor.fetchall()
         return result 
     
+    def insert_event_subscriber(self, user_email, event_details):
+        userID = self.get_user(user_email)[-1]
+        eventID = self.get_event(**event_details)[-1]
+
+        command = "INSERT INTO event_subs (userID, eventID) VALUES (%d, %d)"
+        self.mycursor.execute(command,(userID,eventID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+    
+    def insert_org_subscriber(self, user_email, org_name):
+        userID = self.get_user(user_email)[-1]
+        orgID = self.get_organization(org_name)[-1]
+
+        command = "INSERT INTO org_subs (userID, orgID) VALUES (%d, %d)"
+        self.mycursor.execute(command,(userID,orgID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+    
+    def insert_org_member(self, user_email, org_role, org_name):
+        userID = self.get_user(user_email)[-1]
+        orgID = self.get_organization(org_name)[-1]
+
+        command = "INSERT INTO org_mems (userID, orgRole, orgID) VALUES (%d, %s, %d)"
+        self.mycursor.execute(command,(userID, org_role, orgID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+    
+    def insert_event_org_parent(self, event_details, org_name):
+        eventID = self.get_event(**event_details)[-1]
+        orgID = self.get_organization(org_name)[-1]
+
+        command = "INSERT INTO event_parent_org (eventID, orgID) VALUES (%d, %d)"
+        self.mycursor.execute(command,(eventID, orgID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+
+    def delete_event_subscriber(self, userID = -1, eventID = -1):
+        if userID == -1 or eventID == -1:
+            raise Exception("Need both keys for deletion")
+        command = "DELETE FROM event_subs WHERE userID = %d AND eventID = %d" 
+        self.mycursor.execute(command,(eventID, userID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+    
+    def delete_org_subscriber(self, userID = -1, orgID = -1):
+        if userID == -1 or orgID == -1:
+            raise Exception("Need both keys for deletion")
+
+        command = "DELETE FROM org_subs WHERE userID = %d AND orgID = %d"
+        self.mycursor.execute(command,(userID,orgID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+    
+    def delete_org_member(self, userID = -1, orgID = -1):
+        if userID == -1 or orgID == -1:
+            raise Exception("Need both keys for deletion")
+        
+        command = "DELETE FROM org_mems WHERE userID = %d AND orgID = %d"
+        self.mycursor.execute(command,(userID,orgID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+    
+    def delete_event_org_parent(self, eventID, orgID):
+        if eventID == -1 or orgID == -1:
+            raise Exception("Need both keys for deletion")
+        
+        command = "DELETE FROM org_mems WHERE eventID = %d AND orgID = %d"
+        self.mycursor.execute(command,(eventID,orgID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+
+    def get_event_subscriber(self, userID = -1, eventID = -1):
+        if userID == -1 or eventID == -1:
+            raise Exception("Need both keys for deletion")
+
+        command = "SELECT FROM event_subs WHERE userID = %d AND eventID = %d"
+        self.mycursor.execute(command,(userID,eventID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+    
+    def get_org_subscriber(self, userID = -1, orgID = -1):
+        if userID == -1 or orgID == -1:
+            raise Exception("Need both keys for deletion")
+
+        command = "SELECT FROM org_subs WHERE userID = %d AND orgID = %d"
+        self.mycursor.execute(command,(userID,orgID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+    
+    def get_org_member(self, userID = -1, orgID = -1):
+        if userID == -1 or orgID == -1:
+            raise Exception("Need both keys for deletion")
+
+        command = "SELECT FROM org_mems WHERE userID = %d AND orgID = %d"
+        self.mycursor.execute(command,(userID,orgID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+    
+    def get_event_org_parent(self, eventID, orgID):
+        if eventID == -1 or orgID == -1:
+            raise Exception("Need both keys for deletion")
+
+        command = "SELECT FROM org_mems WHERE eventID = %d AND orgID = %d"
+        self.mycursor.execute(command,(eventID,orgID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result  
     
 

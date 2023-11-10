@@ -1,16 +1,16 @@
 import unittest
-from datetime import datetime
-from organization_class import organization 
+from BBapp.organization import Organization 
 
 class TestEventClass(unittest.TestCase):
 
     def setUp(self):
         # Create an instance of event for testing
-        self.organizaion = organization(
+        self.organizaion = Organization(
             name = "Test Name",
             email = "Test@mail.utoronto.ca",
             description = "Test Description",
-            organization_type = "Test Type"    
+            organization_type = "Test Type",
+            password = "test password"  
         )
 
     def test_to_dict(self):
@@ -20,18 +20,12 @@ class TestEventClass(unittest.TestCase):
         self.assertEqual(event_dict["email"], "Test@mail.utoronto.ca")
         self.assertEqual(event_dict["description"], "Test Description")
         self.assertEqual(event_dict["type"], "Test Type")
+        self.assertEqual(event_dict["password"], "test password")
        
         
     def test_change_name(self):
         self.organizaion.change_name("New organization Name")
         self.assertEqual(self.organizaion.get_name(), "New organization Name")
-
-    def test_add_contact(self):
-        new_contacts = [("Paul", "paul123@mail.utoronto.ca"), ("George", "george345@mail.utoronto.ca")]
-        self.organizaion.add_contact(new_contacts)
-        self.assertEqual(self.organizaion.get_contacts(), new_contacts)
-
-
 
 if __name__ == '__main__':
     unittest.main()
