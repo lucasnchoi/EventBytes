@@ -73,6 +73,19 @@ def test_event(client):
     assert rv.status_code == 200 and "Events Dashboard" in str(rv.data), "Event page unaccessible after logging in"
     db.delete_user('eventTest@mail.utoronto.ca') 
 
+def test_event_dashboard_my_events(client):
+    """Test event page my events"""
+    db.delete_user('myEventsTest@mail.utoronto.ca')
+    rv = signup(client, 'myEventsTest@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', '', '')
+    rv = client.get('/events')
+    assert rv.status_code == 200 and "My Events:" in str(rv.data), "Event page unaccessible after logging in"
+    rv = createEvent(client, 'MyEventTestEvent', 'Other', datetime.datetime(2025, 11, 7, 15, 10), 10, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'No')
+    assert rv.status_code == 200  and "Event created successfully" in str(rv.data), "Event creation failed"
+    rv = client.get('/events')
+    assert rv.status_code == 200 and "MyEventTestEvent" and "testLocation" in str(rv.data), "user's created events not displayed"
+    db.delete_event('testEvent', 0, 'testLocation', datetime.datetime(2025, 11, 7, 15, 10))
+    db.delete_user('myEventsTest@mail.utoronto.ca')
+
 def test_user(client):
     """Test user page"""
     db.delete_user('userTest@mail.utoronto.ca') 
