@@ -174,7 +174,7 @@ class Database:
         eventID = self.get_event(name,location,time)[-1][-1]
         orgID = self.get_organization(org_name)[-1][-1]
 
-        command = "SELECT * FROM org_mems WHERE eventID = %s AND orgID = %s"
+        command = "SELECT * FROM event_parent_org WHERE eventID = %s AND orgID = %s"
         self.mycursor.execute(command,(eventID,orgID))
         result = self.mycursor.fetchall()
         self.mydb.commit()
