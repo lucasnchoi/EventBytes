@@ -6,6 +6,20 @@
     <div class="page-header">
         {% if logged_in %}
         <h1>Events Dashboard</h1>
+        <div>
+            My Events:
+            <br>
+            <ul>
+                {% for event in events %}
+                <li>{{event.name}}</li>
+                <ul>
+                <li>Time: {{event.time}}</li>
+                <li>Location: {{event.place}}</li>
+                </ul>
+                <br>
+            {% endfor %}
+            </ul>
+        </div>
         {% else %}
         <h1>Please <a href="/login">log in</a> first. </h1>
         {% endif %}

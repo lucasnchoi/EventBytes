@@ -7,15 +7,15 @@ class Event:
 #MANDATORY fields: name, type, date/time, place, and details
 #These must be provided by user before an event can be created. (Inform user on front end, * for mandatory fields)
 
-    def __init__(self,event_name, event_type, dateTime, location, description, registeration=None, accommodation=None, requirement=None, size=None, additional_contact=None,eventId='',creatorId='',organizationId=''):
+    def __init__(self,event_name, event_type, location, dateTime, details, booking=None, accommodation=None, requisite=None, size=None, contact=None, organizationId=-1, creatorId=-1, eventId=-1):
         self._name = event_name                  #str
         self.type = event_type                   #str   front-end: maybe have tags for user to select when creating event?
         self._time = dateTime                    #datetime obj
         self._place = location                   #str 
-        self.details = description               #str
-        self._booking = registeration            #front-end: let user select Y/N. If Y, make them input booking instructions as string. If N, pass reservation as "Not required" or just dont provide it during initialization
+        self.details = details                   #str
+        self._booking = booking                  #front-end: let user select Y/N. If Y, make them input booking instructions as string. If N, pass reservation as "Not required" or just dont provide it during initialization
         self.accommodation = accommodation       #str
-        self._requisite = requirement            #str
+        self._requisite = requisite              #str
         self.id = eventId
         self.creatorId = creatorId
         self.organizationId = organizationId      #by default if 0, it means the event is not hosted by any organization 
@@ -23,8 +23,8 @@ class Event:
             self.size = "no limit"        
         else:
             self.size = size                         #int 
-        if additional_contact is not None:
-            self._contact = additional_contact   #additional_contact will be passed as a list of (name, email) pair parsed from user input
+        if contact is not None:
+            self._contact = contact   #additional_contact will be passed as a list of (name, email) pair parsed from user input
         else:
             self._contact = []                   #contacts stored in a list of (string, string) pair 
 
@@ -41,7 +41,7 @@ class Event:
            "organizationId": self.organizationId,
            "name": self._name,
            "type": self.type,
-           "time": self._time.strftime("%Y-%m-%d %H:%M"),
+           "time": self._time,
            "place": self._place,
            "details": self.details,
            "booking": self._booking,              
@@ -114,7 +114,12 @@ class Event:
             return "None"
         
         return self._contact
+    
+    def get_id(self):
+        return self.id
 
+    def get_creatorId(self):
+        return self.creatorId
 
     def print_all_attributes(self):
 
