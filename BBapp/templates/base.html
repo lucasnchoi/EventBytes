@@ -1,7 +1,7 @@
 <!-- Base html file use only for elements we want on every page. (e.g. navigation bar, timestamps...) -->
 {% extends "bootstrap/base.html" %}
 
-{% block title %}ByteBenevolence{% endblock %}
+{% block title %}EventBytes{% endblock %}
 
 {% block navbar %}
 <div class="navbar navbar-inverse" role="navigation">
@@ -14,15 +14,20 @@
                 <span class="icon-bar"></span> 
                 <span class="icon-bar"></span> 
             </button>
-            <a class="navbar-brand" href="/">ByteBenevolence</a>
+            <a class="navbar-brand" href="/">EventBytes</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="/login">Login</a></li> 
             </ul>
             <ul class="nav navbar-nav">
-                <li><a href="/user">Dashboard</a></li> 
+                <li><a href="/events">Events Dashboard</a></li> 
             </ul>
+            <ul class="nav navbar-nav">
+                <li><a href="/user">Account</a></li> 
+            </ul>
+            <ul class="nav navbar-nav">
+                <li><a href="/create_event">Create Event</a></li>
         </div>
    </div>
 </div>
@@ -44,11 +49,5 @@
 {{ super() }} 
 {{ moment.include_moment() }}
 <br>
-<div class="container">
-    <div class="timestamp">
-        <p>The local date and time is {{ moment(current_time).format('LLLL') }}.</p>
-        <p>That was {{ moment(current_time).fromNow(refresh=True) }}</p>
-    </div>
-</div>
 {% endblock %}
 {% endblock %}

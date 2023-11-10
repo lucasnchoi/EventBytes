@@ -1,17 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}User Profile{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block page_content %}
     <div class="page-header">
         {% if logged_in %}
-        <h1>{{first_name}} {{last_name}}'s User Profile</h1>
-        <h2>contact</h2>
-        <h3>email: {{email}}</h3>
-        <h3>phone: {{phone}}</h3>
+        <h1>Events Dashboard</h1>
         {% else %}
         <h1>Please log in first.</h1>
         {% endif %}
     </div>
 {% endblock %}
-
