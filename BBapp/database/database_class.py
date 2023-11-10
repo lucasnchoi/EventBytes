@@ -59,6 +59,12 @@ class Database:
         result = self.mycursor.fetchall()
         return result 
     
+    def get_all_upcoming_events(self, current_time):
+        command = "SELECT * FROM events WHERE time > %s ORDER BY time" 
+        self.mycursor.execute(command,(current_time,))
+        result = self.mycursor.fetchall()
+        return result
+    
     def get_user_created_events(self, userID, current_time):
         command = "SELECT * FROM events WHERE creatorId = %s AND time > %s ORDER BY time" 
         self.mycursor.execute(command,(userID, current_time))

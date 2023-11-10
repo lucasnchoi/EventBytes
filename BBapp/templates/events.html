@@ -10,10 +10,26 @@
             <h2>My Events:</h2>
             <br>
             <div style="overflow: scroll; width: 25%; height: 200px; text-overflow: clip; white-space: nowrap;">
+                {% if MyEvents %}
                 <ul>
-                    {% if events %}
-
-                    {% for event in events %}
+                    {% for event in MyEvents %}
+                    <li>{{event.name}}</li>
+                    <ul>
+                    <li>Time: {{event.time}}</li>
+                    <li>Location: {{event.place}}</li>
+                    </ul>
+                    <br>
+                    {% endfor %}
+                </ul>
+                {%endif%}
+            </div>
+            <br>
+            <h2>Upcoming Events:</h2>
+            <br>
+            <div style="overflow: scroll; width: 25%; height: 200px; text-overflow: clip; white-space: nowrap;">
+                {% if UpcomingEvents %}
+                <ul>
+                    {% for event in UpcomingEvents %}
                     <li>{{event.name}}</li>
                     <ul>
                     <li>Time: {{event.time}}</li>
