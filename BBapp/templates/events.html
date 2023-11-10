@@ -1,24 +1,26 @@
 {% extends "base.html" %}
-
+<link rel="stylesheet" type="text/css" href="../static/main.css">
 {% block title %}Dashboard{% endblock %}
 
 {% block page_content %}
     <div class="page-header">
         {% if logged_in %}
         <h1>Events Dashboard</h1>
-        <div>
-            My Events:
+        <div class="event_dashboard_user_events_container">
+            <h2>My Events:</h2>
             <br>
-            <ul>
-                {% for event in events %}
-                <li>{{event.name}}</li>
+            <div style="overflow: scroll; width: 25%; max-height: 20%; text-overflow: clip; white-space: nowrap;">
                 <ul>
-                <li>Time: {{event.time}}</li>
-                <li>Location: {{event.place}}</li>
+                    {% for event in events %}
+                    <li>{{event.name}}</li>
+                    <ul>
+                    <li>Time: {{event.time}}</li>
+                    <li>Location: {{event.place}}</li>
+                    </ul>
+                    <br>
+                {% endfor %}
                 </ul>
-                <br>
-            {% endfor %}
-            </ul>
+            </div>
         </div>
         {% else %}
         <h1>Please <a href="/login">log in</a> first. </h1>
