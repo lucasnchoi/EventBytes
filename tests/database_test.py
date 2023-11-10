@@ -109,11 +109,34 @@ class TestEventClass(unittest.TestCase):
         results = self.database.delete_event_subscriber(userID,eventID)
         results = self.database.delete_user("a@mail.utoronto.ca")
         results = self.database.delete_event('my event 1','location a', str(timeNow))
+        
+
+    def test_basic_functions_org_subscriber(self):
+        #setup:
+        results = self.database.insert_user("Peter","Jonathan","a@mail.utoronto.ca","64712345","password1234",1,"President")
+        results = self.database.insert_organization("Peter", "a@mail.utoronto.ca", "my description", "my type", "1234")
+
+        #insertion:
+        results = self.database.insert_org_subscriber("a@mail.utoronto.ca", "Peter")
+        self.database.mycursor.execute('SELECT last_insert_id() from org_subs')
+        OSID = list(self.database.mycursor)[0][0]
 
         #get:
-        results = self.database.get_user("a@mail.utoronto.ca")
-        self.assertEqual(results,[])
-        
+        userID = self.database.get_user("a@mail.utoronto.ca")[-1][-1]
+        orgID = self.database.get_organization("Peter")[-1][-1]
+
+        results = self.database.get_org_subscriber("a@mail.utoronto.ca","Peter")
+        self.assertEqual(results[-1],(userID,orgID,OSID))
+
+        """
+        command = "ALTER TABLE users AUTO_INCREMENT = %s" #reset id counter
+        self.database.mycursor.execute(command,(batch_id,))
+        """
+
+        #delete:
+        results = self.database.delete_event_subscriber(userID,orgID)
+        results = self.database.delete_user("a@mail.utoronto.ca")
+        results = self.database.delete_organization("Peter")
     
 
 

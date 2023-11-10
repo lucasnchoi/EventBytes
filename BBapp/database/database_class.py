@@ -151,42 +151,33 @@ class Database:
         return result
     
     def get_org_subscriber(self, user_email, org_name):
-        userID = self.get_user(user_email)[-1]
-        orgID = self.get_organization(org_name)[-1]
+        userID = self.get_user(user_email)[-1][-1]
+        orgID = self.get_organization(org_name)[-1][-1]
 
-        command = "SELECT FROM org_subs WHERE userID = %s AND orgID = %s"
+        command = "SELECT * FROM org_subs WHERE userID = %s AND orgID = %s"
         self.mycursor.execute(command,(userID,orgID))
         result = self.mycursor.fetchall()
         self.mydb.commit()
         return result
     
     def get_org_member(self, user_email, org_name):
-        userID = self.get_user(user_email)[-1]
-        orgID = self.get_organization(org_name)[-1]
+        userID = self.get_user(user_email)[-1][-1]
+        orgID = self.get_organization(org_name)[-1][-1]
 
-        command = "SELECT FROM org_mems WHERE userID = %s AND orgID = %s"
+        command = "SELECT * FROM org_mems WHERE userID = %s AND orgID = %s"
         self.mycursor.execute(command,(userID,orgID))
         result = self.mycursor.fetchall()
         self.mydb.commit()
         return result
     
-    def get_event_org_parent(self, event_details, org_name):
-        eventID = self.get_event(**event_details)[-1]
-        orgID = self.get_organization(org_name)[-1]
+    def get_event_org_parent(self, name,location,time, org_name):
+        eventID = self.get_event(name,location,time)[-1][-1]
+        orgID = self.get_organization(org_name)[-1][-1]
 
-        command = "SELECT FROM org_mems WHERE eventID = %s AND orgID = %s"
+        command = "SELECT * FROM org_mems WHERE eventID = %s AND orgID = %s"
         self.mycursor.execute(command,(eventID,orgID))
         result = self.mycursor.fetchall()
         self.mydb.commit()
         return result  
     
 
-'''
-#quick test:
-db = Database()
-results = db.insert_user("Peter","Jonathan","a@mail.utoronto.ca","64712345","password1234",1,"President")
-result = db.get_user("a@mail.utoronto.ca")
-print(result)
-print(result[-1])
-print(result[-1][-1])
-'''
