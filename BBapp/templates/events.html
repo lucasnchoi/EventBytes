@@ -5,76 +5,100 @@
 
 <div class="events-container">
   {% if logged_in %}
-  <h1>Events Dashboard</h1>
+  <h1><b>Events Dashboard</b></h1>
 
   <div class="events-search-container">
     <input class="searchbar" type="text" placeholder="Search for an Event" />
-    <button class="event-search-button" style="margin-left: 5px">Search</button>
-    Start Date
-    <input type="date" class="start-date">
-    End Date
-    <input type="date" class="end-date">
-    <button class="filter-reset-button" style="margin-left: 5px">Reset</button>
+    <button class="button" style="margin-left: 5px">Search</button>
+  </div>
+
+  <div class="events-filter-container">
+    Start Date:
+    <input class="date-selector" type="date" class="start-date">
+    End Date:
+    <input class="date-selector" type="date" class="end-date">
+    <button class="button" style="margin-left: 5px">Reset Filters</button>
   </div>
 
   <div class="events-body">
 
-    <div class="left-view"> <h2>Discover Events
-    </h2>
+    <div class="left-view"> 
+        <h2>Discover Events</h2>
+
+        <div class="discover-events-container">
+            {% if UpcomingEvents %}
+            {% for event in UpcomingEvents %}
+            <div class="event-card">
+                <div class="event-title" style="text-align: center;"><b>{{event.name}}</b><br/>{{event.type}} <br/></div>
+                <br/>
+                <b>Time: </b>{{event.time}}<br/>
+                <b>Location: </b>{{event.place}}<br/><br/>
+                <div class="register-link" style="text-align: center;"><a>Learn More/Register</a></div>
+            </div>
+            {% endfor %}
+                {% else %}
+                    <div class="no-events-text" style='text-align:center'>No events to show.</div>
+            {%endif%}
+
+        </div>
+
+
 
 
     </div>
 
     <div class="right-view">
-      <div class="my-events">
         <h2>My Events:</h2>
-        <div
-          style="
-            overflow: scroll;
-            width: 25%;
-            height: 200px;
-            text-overflow: clip;
-            white-space: nowrap;
-          "
-        >
-          {% if MyEvents %}
-          <ul>
+        <div class="my-events">
+            <br/>
+            <div
+            style="
+                overflow: scroll;
+                height: 200px;
+                text-overflow: clip;
+                white-space: nowrap;
+            "
+            >
+            {% if MyEvents %}
             {% for event in MyEvents %}
-            <li>{{event.name}}</li>
-            <ul>
-              <li>Time: {{event.time}}</li>
-              <li>Location: {{event.place}}</li>
-            </ul>
+            <div class="event-preview" style="margin-left: 30px">
+                <b>{{event.name}} @ {{event.place}}</b> (Literature)<br/>
+                <b>Time:</b> {{event.time}}<br/><br/> 
+            </div>
             {% endfor %}
-          </ul>
-          {%endif%}
-        </div>
-        </div>
+                {% else %}
+                <div class="no-events-text" style='text-align:center'>No events to show.</div>
+            {% endif %}
 
+
+            </div>
+        </div>
+    
+
+    <h2>Upcoming Events:</h2>
       <div class="upcoming-events">
-        <h2>Upcoming Events:</h2>
         <br />
+        
         <div
           style="
             overflow: scroll;
-            width: 25%;
             height: 200px;
             text-overflow: clip;
             white-space: nowrap;
           "
         >
+
           {% if UpcomingEvents %}
-          <ul>
-            {% for event in UpcomingEvents %}
-            <li>{{event.name}}</li>
-            <ul>
-              <li>Time: {{event.time}}</li>
-              <li>Location: {{event.place}}</li>
-            </ul>
-            <br />
+          {% for event in UpcomingEvents[:3] %}
+            <div class="event-preview" style="margin-left: 30px">
+                <b>{{event.name}} @ {{event.place}}</b> (Literature)<br/>
+                <b>Time:</b> {{event.time}}<br/><br/> 
+            </div>
             {% endfor %}
-          </ul>
-          {%endif%}
+                {% else %}
+                <div class="no-events-text" style='text-align:center'>No events to show.</div>
+            {% endif %}
+
         </div>
       </div>
       <div class="calendar"><h2>Calendar</h2></div>
