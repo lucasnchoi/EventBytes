@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime
-from database import Database  
+from BBapp.database import Database  
 
 class TestEventClass(unittest.TestCase):
 
@@ -58,15 +58,15 @@ class TestEventClass(unittest.TestCase):
         results = self.database.get_event('my event 1', 1 ,'location a',str(timeNow))
         self.assertEqual(results,[])
     
-    '''def test_basic_functions_organizations(self):
+    def test_basic_functions_organizations(self):
         #insertion:
-        results = self.database.insert_organization("Peter", "a@mail.utoronto.ca","1234")
+        results = self.database.insert_organization("Peter", "a@mail.utoronto.ca", "my description", "my type", "1234")
         self.database.mycursor.execute('SELECT last_insert_id() from organizations')
         batch_id = list(self.database.mycursor)[0][0]
 
         #get:
         results = self.database.get_organization("Peter")
-        self.assertEqual(results[-1],('Peter', 'a@mail.utoronto.ca', '1234', batch_id))
+        self.assertEqual(results[-1],('Peter', 'a@mail.utoronto.ca', "my description", "my type", '1234', batch_id))
 
         """
         command = "ALTER TABLE users AUTO_INCREMENT = %s" #reset id counter
@@ -78,7 +78,7 @@ class TestEventClass(unittest.TestCase):
 
         #get:
         results = self.database.get_organization("Peter")
-        self.assertEqual(results,[])'''
+        self.assertEqual(results,[])
 
 
 

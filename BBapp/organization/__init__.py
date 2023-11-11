@@ -1,0 +1,1 @@
+from .organization_class import Organization

@@ -1,13 +1,48 @@
 {% extends "base.html" %}
-
+<link rel="stylesheet" type="text/css" href="../static/main.css">
 {% block title %}Dashboard{% endblock %}
 
 {% block page_content %}
     <div class="page-header">
         {% if logged_in %}
         <h1>Events Dashboard</h1>
+        <div class="event_dashboard_user_events_container">
+            <h2>My Events:</h2>
+            <br>
+            <div style="overflow: scroll; width: 25%; height: 200px; text-overflow: clip; white-space: nowrap;">
+                {% if MyEvents %}
+                <ul>
+                    {% for event in MyEvents %}
+                    <li>{{event.name}}</li>
+                    <ul>
+                    <li>Time: {{event.time}}</li>
+                    <li>Location: {{event.place}}</li>
+                    </ul>
+                    <br>
+                    {% endfor %}
+                </ul>
+                {%endif%}
+            </div>
+            <br>
+            <h2>Upcoming Events:</h2>
+            <br>
+            <div style="overflow: scroll; width: 25%; height: 200px; text-overflow: clip; white-space: nowrap;">
+                {% if UpcomingEvents %}
+                <ul>
+                    {% for event in UpcomingEvents %}
+                    <li>{{event.name}}</li>
+                    <ul>
+                    <li>Time: {{event.time}}</li>
+                    <li>Location: {{event.place}}</li>
+                    </ul>
+                    <br>
+                    {% endfor %}
+                </ul>
+                {%endif%}
+            </div>
+        </div>
         {% else %}
-        <h1>Please log in first.</h1>
+        <h1>Please <a href="/login">log in</a> first. </h1>
         {% endif %}
     </div>
 {% endblock %}

@@ -68,6 +68,9 @@ img {
     margin-top: 50px;
 }
 
+.event_dashboard_user_events_container{
+    width: 25%;
+}
 
 .search-event {
     display: flex;

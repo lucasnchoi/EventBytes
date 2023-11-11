@@ -1,8 +1,10 @@
 from flask import Flask, render_template, session, redirect, url_for, flash, Blueprint, request
 from datetime import datetime
-from  BBapp.forms import *
+from BBapp.forms import *
 from BBapp.database import Database
-from BBapp.user.user_class import User
+from BBapp.user import User
+from BBapp.event import Event
+
 
 db = Database() 
 
@@ -179,7 +181,26 @@ def login():
 events_page = Blueprint('events_page', __name__, template_folder='templates')
 @events_page.route('/events')
 def events():
-    return render_template('events.html', logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+    my_events_list = []
+    upcoming_events_list = []
+    if session.get('logged_in') == True:
+        fetchedUserCreatedEvents = db.get_user_created_events(session['user'].get("userID"), datetime.utcnow())
+        #add events user has registered for (when we have registration functionality)
+        if fetchedUserCreatedEvents != []:
+            for event_iter in fetchedUserCreatedEvents:
+                event = Event(event_iter[0], event_iter[1], event_iter[2], event_iter[3], event_iter[4], event_iter[5], event_iter[6], event_iter[7], event_iter[8], event_iter[9], event_iter[10], event_iter[11], event_iter[12])
+                if (event.get_id() != -1): #check if the event was properly fetched
+                    my_events_list.append(event.to_dict())
+        else:
+            my_events_list = False
+        fetchedUpcomingEvents = db.get_all_upcoming_events(datetime.utcnow())
+        if fetchedUpcomingEvents != []:
+            for event_iter in fetchedUpcomingEvents:
+                event = Event(event_iter[0], event_iter[1], event_iter[2], event_iter[3], event_iter[4], event_iter[5], event_iter[6], event_iter[7], event_iter[8], event_iter[9], event_iter[10], event_iter[11], event_iter[12])
+                upcoming_events_list.append(event.to_dict())
+        else:
+            upcoming_events_list = False
+    return render_template('events.html', MyEvents = my_events_list, UpcomingEvents = upcoming_events_list, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
 
 user_page = Blueprint('user_page', __name__, template_folder='templates')
 @user_page.route('/user')
