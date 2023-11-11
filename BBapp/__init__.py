@@ -9,9 +9,12 @@ app.config['SECRET_KEY'] = ']%<96hX:3Pv+'
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 
-from BBapp.routes import *
+from .routes import *
 app.register_blueprint(home_page)
 app.register_blueprint(login_page)
 app.register_blueprint(user_page)
 app.register_blueprint(signup_page)
 app.register_blueprint(calendar_page)
+app.register_blueprint(events_page)
+app.register_blueprint(create_event_page)
+

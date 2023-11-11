@@ -61,4 +61,14 @@ img {
     margin-top: 20px;
 }
 
+.create-event-header{
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    margin-top: 50px;
+}
+
+.event_dashboard_user_events_container{
+    width: 25%;
+}
 
