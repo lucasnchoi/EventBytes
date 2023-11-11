@@ -207,7 +207,7 @@ class Database:
         return events  
     
     def get_event_subscribers(self, name, location, time):
-        #given user email, fetches all events user is subscribed to
+        #given event details, fetches all users subscribed to event
         eventID = self.get_event(name,location,time)[-1][-1]
         command = "SELECT * FROM event_subs WHERE eventID = %s"
         self.mycursor.execute(command,(eventID,))
@@ -220,8 +220,8 @@ class Database:
             users.append(tmp[0])
         return users
     
-    def get_user_orgs(self, user_email):
-        #given user email, fetches all events user is subscribed to
+    def get_user_org_subs(self, user_email):
+        #given user email, fetches all orgs user is subscribed to
         userID = self.get_user(user_email)[-1][-1]
         command = "SELECT * FROM org_subs WHERE userID = %s"
         self.mycursor.execute(command,(userID,))
@@ -235,9 +235,37 @@ class Database:
         return orgs
 
     def get_org_subscribers(self, org_name):
-        #given user email, fetches all events user is subscribed to
+        #given org name, fetches all users subscribed to org
         orgID = self.get_organization(org_name)[-1][-1]
         command = "SELECT * FROM org_subs WHERE orgID = %s"
+        self.mycursor.execute(command,(orgID,))
+        results = self.mycursor.fetchall()
+        command = "SELECT * FROM users WHERE userID = %s"
+        users = []
+        for result in results:
+            self.mycursor.execute(command,(result[0],))
+            tmp = self.mycursor.fetchall()
+            users.append(tmp[0])
+        return users
+    
+    def get_user_org_memberships(self, user_email):
+        #given user email, fetches all orgs user is a member of
+        userID = self.get_user(user_email)[-1][-1]
+        command = "SELECT * FROM org_mems WHERE userID = %s"
+        self.mycursor.execute(command,(userID,))
+        results = self.mycursor.fetchall()
+        command = "SELECT * FROM organizations WHERE orgID = %s"
+        orgs = []
+        for result in results:
+            self.mycursor.execute(command,(result[2],))
+            tmp = self.mycursor.fetchall()
+            orgs.append(tmp[0])
+        return orgs
+
+    def get_org_memberships(self, org_name):
+        #given org name, fetches all users that are members of the org
+        orgID = self.get_organization(org_name)[-1][-1]
+        command = "SELECT * FROM org_mems WHERE orgID = %s"
         self.mycursor.execute(command,(orgID,))
         results = self.mycursor.fetchall()
         command = "SELECT * FROM users WHERE userID = %s"
