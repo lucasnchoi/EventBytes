@@ -134,6 +134,12 @@ class TestEventClass(unittest.TestCase):
         results = self.database.get_org_subscriber("a@mail.utoronto.ca","Peter")
         self.assertEqual(results[-1],(userID,orgID,OSID))
 
+        results = self.database.get_user_orgs("a@mail.utoronto.ca")
+        self.assertEqual(results[0][:4],('Peter', 'a@mail.utoronto.ca', 'my description', 'my type'))
+
+        results = self.database.get_org_subscribers("Peter")
+        self.assertEqual(results[0][:4],('Peter', 'Jonathan', 'a@mail.utoronto.ca', '64712345'))
+
         """
         command = "ALTER TABLE users AUTO_INCREMENT = %s" #reset id counter
         self.database.mycursor.execute(command,(batch_id,))

@@ -220,4 +220,30 @@ class Database:
             users.append(tmp[0])
         return users
     
+    def get_user_orgs(self, user_email):
+        #given user email, fetches all events user is subscribed to
+        userID = self.get_user(user_email)[-1][-1]
+        command = "SELECT * FROM org_subs WHERE userID = %s"
+        self.mycursor.execute(command,(userID,))
+        results = self.mycursor.fetchall()
+        command = "SELECT * FROM organizations WHERE orgID = %s"
+        orgs = []
+        for result in results:
+            self.mycursor.execute(command,(result[1],))
+            tmp = self.mycursor.fetchall()
+            orgs.append(tmp[0])
+        return orgs
 
+    def get_org_subscribers(self, org_name):
+        #given user email, fetches all events user is subscribed to
+        orgID = self.get_organization(org_name)[-1][-1]
+        command = "SELECT * FROM org_subs WHERE orgID = %s"
+        self.mycursor.execute(command,(orgID,))
+        results = self.mycursor.fetchall()
+        command = "SELECT * FROM users WHERE userID = %s"
+        users = []
+        for result in results:
+            self.mycursor.execute(command,(result[0],))
+            tmp = self.mycursor.fetchall()
+            users.append(tmp[0])
+        return users
