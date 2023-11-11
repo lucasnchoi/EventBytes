@@ -1,48 +1,91 @@
 {% extends "base.html" %}
-<link rel="stylesheet" type="text/css" href="../static/main.css">
-{% block title %}Dashboard{% endblock %}
+<link rel="stylesheet" type="text/css" href="../static/main.css" />
+{% block title %}Dashboard{% endblock %} {% block page_content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='events.css') }}" />
 
-{% block page_content %}
-    <div class="page-header">
-        {% if logged_in %}
-        <h1>Events Dashboard</h1>
-        <div class="event_dashboard_user_events_container">
-            <h2>My Events:</h2>
-            <br>
-            <div style="overflow: scroll; width: 25%; height: 200px; text-overflow: clip; white-space: nowrap;">
-                {% if MyEvents %}
-                <ul>
-                    {% for event in MyEvents %}
-                    <li>{{event.name}}</li>
-                    <ul>
-                    <li>Time: {{event.time}}</li>
-                    <li>Location: {{event.place}}</li>
-                    </ul>
-                    <br>
-                    {% endfor %}
-                </ul>
-                {%endif%}
-            </div>
-            <br>
-            <h2>Upcoming Events:</h2>
-            <br>
-            <div style="overflow: scroll; width: 25%; height: 200px; text-overflow: clip; white-space: nowrap;">
-                {% if UpcomingEvents %}
-                <ul>
-                    {% for event in UpcomingEvents %}
-                    <li>{{event.name}}</li>
-                    <ul>
-                    <li>Time: {{event.time}}</li>
-                    <li>Location: {{event.place}}</li>
-                    </ul>
-                    <br>
-                    {% endfor %}
-                </ul>
-                {%endif%}
-            </div>
-        </div>
-        {% else %}
-        <h1>Please <a href="/login">log in</a> first. </h1>
-        {% endif %}
+<div class="events-container">
+  {% if logged_in %}
+  <h1>Events Dashboard</h1>
+
+  <div class="events-search-container">
+    <input class="searchbar" type="text" placeholder="Search for an Event" />
+    <button class="event-search-button" style="margin-left: 5px">Search</button>
+    Start Date
+    <input type="date" class="start-date">
+    End Date
+    <input type="date" class="end-date">
+    <button class="filter-reset-button" style="margin-left: 5px">Reset</button>
+  </div>
+
+  <div class="events-body">
+
+    <div class="left-view"> <h2>Discover Events
+    </h2>
+
+
     </div>
+
+    <div class="right-view">
+      <div class="my-events">
+        <h2>My Events:</h2>
+        <div
+          style="
+            overflow: scroll;
+            width: 25%;
+            height: 200px;
+            text-overflow: clip;
+            white-space: nowrap;
+          "
+        >
+          {% if MyEvents %}
+          <ul>
+            {% for event in MyEvents %}
+            <li>{{event.name}}</li>
+            <ul>
+              <li>Time: {{event.time}}</li>
+              <li>Location: {{event.place}}</li>
+            </ul>
+            {% endfor %}
+          </ul>
+          {%endif%}
+        </div>
+        </div>
+
+      <div class="upcoming-events">
+        <h2>Upcoming Events:</h2>
+        <br />
+        <div
+          style="
+            overflow: scroll;
+            width: 25%;
+            height: 200px;
+            text-overflow: clip;
+            white-space: nowrap;
+          "
+        >
+          {% if UpcomingEvents %}
+          <ul>
+            {% for event in UpcomingEvents %}
+            <li>{{event.name}}</li>
+            <ul>
+              <li>Time: {{event.time}}</li>
+              <li>Location: {{event.place}}</li>
+            </ul>
+            <br />
+            {% endfor %}
+          </ul>
+          {%endif%}
+        </div>
+      </div>
+      <div class="calendar"><h2>Calendar</h2></div>
+    </div>
+  </div>
+
+  </div>
+
+
+  {% else %}
+  <h1>Please <a href="/login">log in</a> first.</h1>
+  {% endif %}
+</div>
 {% endblock %}

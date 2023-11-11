@@ -1,0 +1,8 @@
+.events-body {
+  display: flex;
+  flex-direction: row;
+}
+
+.left-view {
+  width: 65%;
+}
