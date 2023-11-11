@@ -205,8 +205,10 @@ def user():
         lastName = session['user'].get("lastname")
         phone = session['user'].get("phone")
         password = session['password']
+        return render_template('user.html', first_name=firstName, last_name=lastName,password = password, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
     else:
         firstName = None
         lastName = None
         phone = None
-    return render_template('user.html', first_name=firstName, last_name=lastName,password = password, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+        return redirect(url_for('login_page.login'))
+
