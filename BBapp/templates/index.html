@@ -5,29 +5,28 @@
 
 {% block page_content %}
     <div class="page-header">
-        <h1>Welcome to team ByteBenevolence's web app!</h1>
+        <h1>Welcome to team ByteBenevolence's Web App!</h1>
     </div>
+
+<!-- Search Bar Form -->
+    <div class = "search-event"> 
+        <form action="#" method="GET">
+            <label for="search">Search for Events:</label>
+            <input type="text" id="search" name="query" placeholder="Event name or organization">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+   
+   <!-- Date Selection Form -->
+   <div class = "filter-date">
+       <form action="#" method="GET">
+           <label for="date">Select Date:</label>
+           <input type="date" id="date" name="date">
+           <button type="submit">Filter by Date</button>
+       </form>
+   </div>
+
 {% endblock %}
 
-{% block searchbar %}
- <!-- Search Bar Form -->
- <div class = "search-event"> 
-    <form action="/search" method="GET">
-        <label for="search">Search for Events:</label>
-        <input type="text" id="search" name="query" placeholder="Event name or organization">
-        <button type="submit">Search</button>
-    </form>
-</div>
-{% endblock %}
 
-{%block dateselect %}
-<!-- Date Selection Form -->
-<div class = "filter-date">
-    <form action="/events_for_selected_date" method="GET">
-        <label for="date">Select Date:</label>
-        <input type="date" id="date" name="date">
-        <button type="sort">Filter by Date</button>
-    </form>
-</div>
-{% endblock}
 

@@ -14,4 +14,5 @@ app.register_blueprint(user_page)
 app.register_blueprint(signup_page)
 app.register_blueprint(events_page)
 app.register_blueprint(create_event_page)
-
+app.register_blueprint(search_page) 
+app.register_blueprint(filter_date)

@@ -1,0 +1,67 @@
+[33mcommit 4eeaa722d0cd7659bb9e1e943a68229decbc9565[m[33m ([m[1;36mHEAD -> [m[1;32mclass-event[m[33m, [m[1;31morigin/class-event[m[33m)[m
+Author: HarryHuCodes <48864969+HarryHuCodes@users.noreply.github.com>
+Date:   Thu Oct 26 10:38:50 2023 -0400
+
+    Deleted pycaches and reorganized files for clarity
+
+[33mcommit 6ad452ba43e632f274213424c716c00ead0ee1f3[m
+Author: HarryHuCodes <48864969+HarryHuCodes@users.noreply.github.com>
+Date:   Sun Oct 22 12:22:36 2023 -0400
+
+    Created script for automating verbosity when running 'event_unittest.py'
+
+[33mcommit 71985dbc7056b28bda2fa1d561c70f0bd716aaa0[m
+Author: HarryHuCodes <48864969+HarryHuCodes@users.noreply.github.com>
+Date:   Sun Oct 22 12:14:41 2023 -0400
+
+    Wrote unittest for 'event_class.py'
+
+[33mcommit e235865dceff6d1175c1aefb37941e35a77c9a43[m
+Author: HarryHuCodes <48864969+HarryHuCodes@users.noreply.github.com>
+Date:   Sun Oct 22 12:11:19 2023 -0400
+
+    Fixed minor issues in 'event_class' and 'event_sampleObj'
+    
+    issues relating to accommodation attribute and its associated methods
+
+[33mcommit 1cb308a82764280b73cbad6edcf4e2a897f27036[m
+Author: HarryHuCodes <48864969+HarryHuCodes@users.noreply.github.com>
+Date:   Thu Oct 19 21:35:42 2023 -0400
+
+    Created a class for 'event' containing relevant methods and data members, as well as a sample event object showcasing its instantiation and methods
+
+[33mcommit c19d15ff9c7bd75f2552de0e4c6da964ba036a92[m[33m ([m[1;32mmain[m[33m)[m
+Author: Andrew Tong <64707450+tongandrew2@users.noreply.github.com>
+Date:   Mon Oct 16 19:33:31 2023 -0400
+
+    Delete Code of Conduct.md
+
+[33mcommit 9863741eb8e1f2cb767684c7396af2a0ffde1a61[m
+Author: Andrew Tong <64707450+tongandrew2@users.noreply.github.com>
+Date:   Mon Oct 16 19:31:20 2023 -0400
+
+    Create CODE_OF_CONDUCT.md
+
+[33mcommit 03aba1849b11b807110ef766a63838abde916b05[m
+Author: Andrew Tong <64707450+tongandrew2@users.noreply.github.com>
+Date:   Mon Oct 16 19:24:48 2023 -0400
+
+    Create Code of Conduct.md.
+
+[33mcommit 8c1562a190d20c1a36f46dc75543b370543730c6[m
+Author: Andrew Tong <64707450+tongandrew2@users.noreply.github.com>
+Date:   Mon Oct 16 19:24:27 2023 -0400
+
+    Create Contribution.md.
+
+[33mcommit 5d4996f6bf0ec43593409d843220cb69882862eb[m
+Author: mvernooy3687 <71790275+mvernooy3687@users.noreply.github.com>
+Date:   Mon Oct 9 19:20:19 2023 -0400
+
+    Update README.md
+
+[33mcommit f3e48df465db21bb5af50b7de641c8f8c451ae16[m
+Author: mvernooy3687 <71790275+mvernooy3687@users.noreply.github.com>
+Date:   Mon Oct 9 19:19:48 2023 -0400
+
+    Initial commit

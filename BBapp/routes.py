@@ -15,8 +15,8 @@ def home():
     if search_query:
         filtered_events = db.search_events(search_query)
 
-    return render_template('index.html', current_time=datetime.utcnow(), filtered_events=filtered_events, search_query=search_query)
-
+    #return render_template('index.html', current_time=datetime.utcnow(), filtered_events=filtered_events, search_query=search_query)
+    return render_template('index.html', current_time=datetime.utcnow())
 
 create_event_page = Blueprint('create_event_page', __name__, template_folder='templates')
 @create_event_page.route('/create_event', methods=['GET', 'POST'])
@@ -208,7 +208,7 @@ def search():
 filter_date = Blueprint('filter_date', __name__, template_folder='templates')
 
 
-@search_page.route('/filter', methods=['GET'])
+@filter_date.route('/filter', methods=['GET'])
 def filter():
    
     selected_date = request.args.get('date')  # Get the selected date from the request

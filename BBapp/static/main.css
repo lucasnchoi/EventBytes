@@ -69,3 +69,22 @@ img {
 }
 
 
+.search-event {
+    display: flex;
+    justify-content: space-between;
+    max-width: 600px;
+    margin: auto;
+}
+
+.search-event,
+.filter-date {
+    flex: 1;
+}
+
+.search-event input[type="text"],
+.filter-date input[type="date"],
+.search-event button,
+.filter-date button {
+    padding: 10px;
+    font-size: 16px;
+}
