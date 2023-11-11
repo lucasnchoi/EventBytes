@@ -275,3 +275,31 @@ class Database:
             tmp = self.mycursor.fetchall()
             users.append(tmp[0])
         return users
+    
+    def get_event_org(self, name, location, time):
+        #given event details, fetches org event belongs to
+        eventID = self.get_event(name, location, time)[-1][-1]
+        command = "SELECT * FROM event_parent_org WHERE eventID = %s"
+        self.mycursor.execute(command,(eventID,))
+        results = self.mycursor.fetchall()
+        command = "SELECT * FROM organizations WHERE orgID = %s"
+        orgs = []
+        for result in results:
+            self.mycursor.execute(command,(result[1],))
+            tmp = self.mycursor.fetchall()
+            orgs.append(tmp[0])
+        return orgs
+    
+    def get_org_events(self, org_name):
+        #given org name, fetches all events for the organization
+        orgID = self.get_organization(org_name)[-1][-1]
+        command = "SELECT * FROM event_parent_org WHERE orgID = %s"
+        self.mycursor.execute(command,(orgID,))
+        results = self.mycursor.fetchall()
+        command = "SELECT * FROM events WHERE eventID = %s"
+        users = []
+        for result in results:
+            self.mycursor.execute(command,(result[0],))
+            tmp = self.mycursor.fetchall()
+            users.append(tmp[0])
+        return users
