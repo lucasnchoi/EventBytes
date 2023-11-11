@@ -191,5 +191,33 @@ class Database:
         result = self.mycursor.fetchall()
         self.mydb.commit()
         return result  
+
+    def get_user_events(self, user_email):
+        #given user email, fetches all events user is subscribed to
+        userID = self.get_user(user_email)[-1][-1]
+        command = "SELECT * FROM event_subs WHERE userID = %s"
+        self.mycursor.execute(command,(userID,))
+        results = self.mycursor.fetchall()
+        command = "SELECT * FROM events WHERE eventID = %s"
+        events = []
+        for result in results:
+            self.mycursor.execute(command,(result[1],))
+            tmp = self.mycursor.fetchall()
+            events.append(tmp[0])
+        return events  
+    
+    def get_event_subscribers(self, name, location, time):
+        #given user email, fetches all events user is subscribed to
+        eventID = self.get_event(name,location,time)[-1][-1]
+        command = "SELECT * FROM event_subs WHERE eventID = %s"
+        self.mycursor.execute(command,(eventID,))
+        results = self.mycursor.fetchall()
+        command = "SELECT * FROM users WHERE userID = %s"
+        users = []
+        for result in results:
+            self.mycursor.execute(command,(result[0],))
+            tmp = self.mycursor.fetchall()
+            users.append(tmp[0])
+        return users
     
 

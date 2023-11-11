@@ -100,6 +100,12 @@ class TestEventClass(unittest.TestCase):
         results = self.database.get_event_subscriber("a@mail.utoronto.ca","my event 1", "location a", str(timeNow))
         self.assertEqual(results[-1],(userID,eventID,ESID))
 
+        results = self.database.get_user_events("a@mail.utoronto.ca")
+        self.assertEqual(results[0][:4],('my event 1', 'Other','location a', str(timeNow)))
+
+        results = self.database.get_event_subscribers("my event 1", "location a", str(timeNow))
+        self.assertEqual(results[0][:4],('Peter', 'Jonathan', 'a@mail.utoronto.ca', '64712345'))
+
         """
         command = "ALTER TABLE users AUTO_INCREMENT = %s" #reset id counter
         self.database.mycursor.execute(command,(batch_id,))
@@ -192,8 +198,6 @@ class TestEventClass(unittest.TestCase):
         results = self.database.delete_org_member(eventID,orgID)
         results = self.database.delete_event('my event 1','location a', str(timeNow))
         results = self.database.delete_organization("Peter")
-    
-
 
 
 if __name__ == '__main__':
