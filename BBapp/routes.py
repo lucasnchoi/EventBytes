@@ -204,7 +204,7 @@ def user():
         firstName = session['user'].get("firstname")
         lastName = session['user'].get("lastname")
         phone = session['user'].get("phone")
-        password = session['user'].get("password")
+        password = session['password']
     else:
         firstName = None
         lastName = None
