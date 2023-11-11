@@ -158,6 +158,7 @@ def login():
             session['user'] = User(fetchedUser[0], fetchedUser[1], fetchedUser[2], fetchedUser[3], fetchedUser[7], fetchedUser[5], fetchedUser[6]).dictionary()
             session['email'] = fetchedUser[2]
             session['logged_in'] = True
+            session['password'] = fetchedUser[4]
             return redirect(url_for('events_page.events'))
           
         return render_template('login.html', logged_in=session.get('logged_in'), form=form, email=session.get('email'), validEmail=session.get('valid_email'), current_time=datetime.utcnow())
@@ -203,8 +204,9 @@ def user():
         firstName = session['user'].get("firstname")
         lastName = session['user'].get("lastname")
         phone = session['user'].get("phone")
+        password = session['user'].get("password")
     else:
         firstName = None
         lastName = None
         phone = None
-    return render_template('user.html', first_name=firstName, last_name=lastName, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+    return render_template('user.html', first_name=firstName, last_name=lastName,password = password, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
