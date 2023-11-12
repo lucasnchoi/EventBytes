@@ -111,7 +111,13 @@ def signup():
                 #create new org given a club name
                 #get generated orgID
             '''
-            orgId = 1 #default value for now
+            result = db.get_organization(signupUser['clubName'])
+            if len(result) == 0:
+                db.insert_organization(signupUser['clubName'],"Placeholder Email","Placeholder Description","Placeholder org type", "Placeholder Password")
+                orgId = db.get_organization(signupUser['clubName'])[0][-1]
+            else:
+                orgId = result[0][-1]
+            #orgId = 1 #default value for now
 
         try:
             if db.get_user(signupUser['email']): #if user already exists

@@ -1,10 +1,21 @@
-{% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
-
-{% block title %}Homepage{% endblock %}
-
-{% block page_content %}
-    <div class="page-header">
-        <h1>Welcome to team ByteBenevolence's web app!</h1>
+{% extends "base.html" %} {% import "bootstrap/wtf.html" as wtf %} {% block
+    title %}Homepage{% endblock %} {% block page_content %}
+    
+    <div class="index-container">
+      <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}" />
+      <div class="title-container">
+        <h1>EventBytes</h1>
+      </div>
+      <div class="description-container">
+        <h4>Find Your Next Adventure with Our Events Explorer!</h3>
+      </div>
+      <div class="search-container">
+        <input class="searchbar" type="text" placeholder="Search for an Event" />
+        <button class="searchbutton" role="button" style="margin-left: 5px">Search</button>
+      </div>
+    
+    
+    
     </div>
-{% endblock %}
+    
+    {% endblock %}
