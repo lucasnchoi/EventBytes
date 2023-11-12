@@ -18,6 +18,34 @@
     End Date:
     <input class="date-selector" type="date" class="end-date">
     <button class="button" style="margin-left: 5px">Reset Filters</button>
+    <br/>
+    <div style="margin-top: 5px;">
+        Event Type:
+        <select name="event-type" id="event-type">
+        <option value="academic">Academic</option>
+        <option value="arts">Arts</option>
+        <option value="athletics">Athletics</option>
+        <option value="career">Career</option>
+        <option value="cultural">Cultural</option>
+        <option value="health">Health</option>
+        <option value="social">Social</option>
+        <option value="music">Music</option>
+        <option value="technology">Technology</option>
+        <option value="science">Science</option>
+        <option value="food">Food</option>
+        <option value="environmental">Environmental</option>
+        <option value="volunteer">Volunteer</option>
+        <option value="travel">Travel</option>
+        <option value="gaming">Gaming</option>
+        <option value="fashion">Fashion</option>
+        <option value="fitness">Fitness</option>
+        <option value="business">Business</option>
+        <option value="literature">Literature</option>
+        <option value="film">Film</option>
+        <option value="religious">Religious</option>
+        <option value="other">Other</option>
+        </select></div>
+
   </div>
 
   <div class="events-body">
@@ -41,9 +69,6 @@
             {%endif%}
 
         </div>
-
-
-
 
     </div>
 
@@ -79,15 +104,6 @@
       <div class="upcoming-events">
         <br />
         
-        <div
-          style="
-            overflow: scroll;
-            height: 200px;
-            text-overflow: clip;
-            white-space: nowrap;
-          "
-        >
-
           {% if UpcomingEvents %}
           {% for event in UpcomingEvents[:3] %}
             <div class="event-preview" style="margin-left: 30px">
@@ -99,7 +115,6 @@
                 <div class="no-events-text" style='text-align:center'>No events to show.</div>
             {% endif %}
 
-        </div>
       </div>
       <div class="calendar"><h2>Calendar</h2></div>
     </div>
