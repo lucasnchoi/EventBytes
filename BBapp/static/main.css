@@ -1,90 +1,95 @@
-/* FILEPATH: /c:/Github/ECE444/Byte_Benevolence/static/main.css */
-/*static folder will hold all static files such as css, js, images, etc.*/
-
-/*some example styles from github copilot feel free to modify/remove as needed*/
-text {
-    font-size: 16px;
-    line-height: 1.5;
-    color: #333;
+body {
+  margin: 0;
+  height: 100vh;
+  background: rgb(245, 247, 250);
+  font-family: "Gill Sans", sans-serif;
+  font-size: 20px;
+}
+.title-container {
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+}
+.description-container {
+  display: flex;
+  justify-content: center;
+}
+.search-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 100px;
 }
 
-h1 {
-    font-weight: bold;
-    color: #444;
+.searchbar {
+  border: 1px solid #222222;
+  border-radius: 8px;
+  width: 400px;
 }
 
-link {
-    color: #007bff;
-    text-decoration: none;
+/*source: https://getcssscan.com/css-buttons-examples*/
+.searchbutton {
+  background-color: #ffffff;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #222222;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600;
+  line-height: 20px;
+  margin: 0;
+  padding: 13px 23px;
+  position: relative;
+  text-align: center;
+  touch-action: manipulation;
+  transition: box-shadow 0.2s, -ms-transform 0.1s, -webkit-transform 0.1s,
+    transform 0.1s;
+  width: auto;
 }
 
-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+.searchbutton:focus-visible {
+  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
+  transition: box-shadow 0.2s;
 }
 
-input {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 16px;
-    color: #333;
+.searchbutton:active {
+  background-color: #f7f7f7;
+  border-color: #000000;
+  transform: scale(0.96);
 }
 
-img {
-    max-width: 100%;
-    height: auto;
+.searchbutton:disabled {
+  border-color: #dddddd;
+  color: #dddddd;
+  cursor: not-allowed;
+  opacity: 1;
 }
 
-.signup-header{
-    font-size: 50px;
-    font-weight: bold;
-    margin-bottom: 40px;
-    margin-top: 50px;
+.navbar-container {
+  display: flex;
+  justify-content: flex-end;
+  color: white;
+  height: 50px;
 }
 
-.signup-custom-submit-button {
-    background-color: #007bff; 
-    color: white; 
-    border: none; 
-    padding: 10px 20px; 
-    border-radius: 5px; 
-    cursor: pointer; 
+.nav.navbar-nav li a {
+  color: white;
 }
 
-.signup-subtext{
-    font-size: 15px;
-    margin-top: 20px;
+.nav.navbar-nav li a:hover {
+  color: #a3a3a3;
 }
 
-.create-event-header{
-    font-size: 50px;
-    font-weight: bold;
-    margin-bottom: 40px;
-    margin-top: 50px;
+.nav.navbar-nav li a:active {
+  color: #797979;
+  transform: scale(0.95);
 }
 
-
-.search-event {
-    display: flex;
-    justify-content: space-between;
-    max-width: 600px;
-    margin: auto;
-}
-
-.search-event,
-.filter-date {
-    flex: 1;
-}
-
-.search-event input[type="text"],
-.filter-date input[type="date"],
-.search-event button,
-.filter-date button {
-    padding: 10px;
-    font-size: 16px;
+.nav.navbar-nav li a:disabled {
+  border-color: #dddddd;
+  color: #dddddd;
+  cursor: not-allowed;
+  opacity: 1;
 }

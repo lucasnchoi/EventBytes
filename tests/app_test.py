@@ -1,7 +1,7 @@
 import pytest
+import datetime
 from BBapp import app
 from BBapp.database import Database
-import datetime
 
 db = Database()
 
@@ -67,17 +67,31 @@ def test_login(client): #Nuova
 def test_event(client):
     """Test event page"""
     rv = client.get('/events')
-    assert rv.status_code == 200 and "Please log in first." in str(rv.data), "Event page accessible without logging in"
+    assert rv.status_code == 200 and '<h1>Please <a href="/login">log in</a> first. </h1>' in str(rv.data), "Event page accessible without logging in"
     rv = signup(client, 'eventTest@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', '', '')
     rv = client.get('/events')
     assert rv.status_code == 200 and "Events Dashboard" in str(rv.data), "Event page unaccessible after logging in"
     db.delete_user('eventTest@mail.utoronto.ca') 
 
+def test_event_dashboard_my_events(client):
+    """Test event page my events"""
+    db.delete_user('myEventsTest@mail.utoronto.ca')
+    rv = signup(client, 'myEventsTest@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', '', '')
+    rv = client.get('/events')
+    assert rv.status_code == 200 and "My Events:" and "Upcoming Events:" in str(rv.data), "Event page unaccessible after logging in"
+    rv = createEvent(client, 'MyEventTestEvent', 'Other', datetime.datetime(2025, 11, 7, 15, 10), 10, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'No')
+    assert rv.status_code == 200  and "Event created successfully" in str(rv.data), "Event creation failed"
+    rv = client.get('/events')
+    assert rv.status_code == 200 and "MyEventTestEvent" and "testLocation" in str(rv.data), "User's created events not displayed"
+    db.delete_event('MyEventTestEvent', 'testLocation', datetime.datetime(2025, 11, 7, 15, 10))
+    db.delete_user('myEventsTest@mail.utoronto.ca')
+
 def test_user(client):
     """Test user page"""
     db.delete_user('userTest@mail.utoronto.ca') 
     rv = client.get('/user')
-    assert rv.status_code == 200 and "Please log in first." in str(rv.data), "User page accessible without logging in"
+    print(str(rv.data))
+    assert rv.status_code == 200 and '<h1>Please <a href="/login">log in</a> first.</h1>' in str(rv.data), "User page accessible without logging in"
     rv = signup(client, 'userTest@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', '', '')
     rv = client.get('/user')
     assert rv.status_code == 200, "User page unaccessible after logging in"
@@ -109,10 +123,10 @@ def test_createEvent(client):
     rv = signup(client, 'eventCreator@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'Yes', 'Developer Club', 'President')
     rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2025, 11, 7, 15, 10), 10, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'No') #valid event creation for personal
     assert rv.status_code == 200  and "Event created successfully" in str(rv.data), "Event creation failed"
-    db.delete_event('testEvent', 0, 'testLocation', datetime.datetime(2025, 11, 7, 15, 10)) #delete event after test
+    db.delete_event('testEvent', 'testLocation', datetime.datetime(2025, 11, 7, 15, 10)) #delete event after test
     rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2025, 11, 7, 15, 10), 10, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'Yes') #valid event creation for org
     assert rv.status_code == 200  and "Event created successfully" in str(rv.data), "Event creation failed"
-    db.delete_event('testEvent', 1, 'testLocation', datetime.datetime(2025, 11, 7, 15, 10)) #delete event after test
+    db.delete_event('testEvent', 'testLocation', datetime.datetime(2025, 11, 7, 15, 10)) #delete event after test
     rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2021, 11, 7, 15, 10), 10, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'No') #invalid event creation time
     assert "Events cannot be created in the past" in str(rv.data)
     rv = createEvent(client, 'testEvent', 'Other', datetime.datetime(2025, 11, 7, 15, 10), -1, 'testLocation', 'testDetails', 'testBooking', 'testAccommodation', 'testRequisite', 'testContact', 'No') #invalid event creation size

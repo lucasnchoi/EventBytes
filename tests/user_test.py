@@ -1,5 +1,5 @@
 import pytest
-from user_class import User
+from BBapp.user import User
 
 testUser = User("test", "user", "test.user@mail.utoronto.ca", "1234567890", 1, 1, "President")
 
