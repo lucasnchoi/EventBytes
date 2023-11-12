@@ -214,7 +214,12 @@ def user():
             updateUser["lastname"] = form.lastname.data
             updateUser["email"] = form.email.data
             updateUser["password"] = form.password.data
-            db.insert_user(updateUser)
+            updateUser["phone"] = form.phone.data
+            print(updateUser)
+            db.delete_user(updateUser['email'])
+            db.insert_user(updateUser['firstname'],updateUser['lastname'],updateUser['email'],updateUser['phone'],updateUser['password'],session.get('OrgId'), session.get('OrgRole'))
+            flash('updated successfully', 'success')
+            return redirect(url_for('user_page.user'))
         return render_template('user.html', email =  session.get('email'), first_name = session['user'].get("firstname"), last_name = session['user'].get("lastname") ,form = form, image_file = image_file, logged_in=session.get('logged_in'), current_time=datetime.utcnow())
     else:
         firstName = None
