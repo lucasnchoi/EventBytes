@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}User Profile{% endblock %}
@@ -5,99 +6,151 @@
 {% block page_content %}
     <div class="page-header">
         {% if logged_in %}
-        <div class="sidenav">
-            <div class="profile">
-                <img src="https://imdezcode.files.wordpress.com/2020/02/imdezcode-logo.png" alt="" width="100" height="100">
-    
-                <div class="name">
-                    Hello there!
-                </div>
-                <div class="job">
-                    Web Developer
-                </div>
-            </div>
-    
-            <div class="sidenav-url">
-                <div class="url">
-                    <a href="#profile" class="active">Profile</a>
-                    <hr align="center">
-                </div>
-                <div class="url">
-                    <a href="#settings">Settings</a>
-                    <hr align="center">
-                </div>
-            </div>
-        </div>
-        <!-- End -->
-    
-        <!-- Main -->
-        <div class="main">
-            <h2>IDENTITY</h2>
-            <div class="card">
-                <div class="card-body">
-                    <i class="fa fa-pen fa-xs edit"></i>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Name</td>
-                                <td>:</td>
-                                <td>{{first_name}} {{last_name}}</td>
-                            </tr>
-                            <tr>
-                                <td>Email</td>
-                                <td>:</td>
-                                <td>{{email}}</td>
-                            </tr>
-                            <tr>
-                                <td>Password</td>
-                                <td>:</td>
-                                <td>{{password}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-    
-            <h2>SOCIAL MEDIA</h2>
-            <div class="card">
-                <div class="card-body">
-                    <i class="fa fa-pen fa-xs edit"></i>
-                    <div class="social-media">
-                        <span class="fa-stack fa-sm">
-                            <i class="fas fa-circle fa-stack-2x"></i>
-                            <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <span class="fa-stack fa-sm">
-                            <i class="fas fa-circle fa-stack-2x"></i>
-                            <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <span class="fa-stack fa-sm">
-                            <i class="fas fa-circle fa-stack-2x"></i>
-                            <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <span class="fa-stack fa-sm">
-                            <i class="fas fa-circle fa-stack-2x"></i>
-                            <i class="fab fa-invision fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <span class="fa-stack fa-sm">
-                            <i class="fas fa-circle fa-stack-2x"></i>
-                            <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <span class="fa-stack fa-sm">
-                            <i class="fas fa-circle fa-stack-2x"></i>
-                            <i class="fab fa-whatsapp fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <span class="fa-stack fa-sm">
-                            <i class="fas fa-circle fa-stack-2x"></i>
-                            <i class="fab fa-snapchat fa-stack-1x fa-inverse"></i>
-                        </span>
+        <div class="container emp-profile">
+            <form method="post">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="profile-img">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog" alt=""/>
+                            <div class="file btn btn-lg btn-primary">
+                                Change Photo
+                                <input type="file" name="file"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-head">
+                                    <h1>
+                                        {{first_name}} 
+                                        {{last_name}}
+                                    </h1>
+                                    <p class="proile-rating">RANKINGS : <span>8/10</span></p>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Calendar</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <h2>
+                            Roles:
+                        </h2>
                     </div>
                 </div>
-            </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="profile-work">
+                            <p>Current Events:</p>
+                            <a href="">Event 1</a><br/>
+                            <a href="">Event 2</a><br/>
+                            <a href="">Event 3</a>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="tab-content profile-tab" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                        <div class="row">
+                                            <i class="fa-solid fa-envelope"></i>
+                                            <div class="col-md-6">
+                                                <label>Name</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{first_name}}
+                                                {{last_name}}   
+                                            
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Email</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{email}}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Phone</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{phone}}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Password</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{password}}
+                                            <button type="button" onclick="toggle_display()"  class="btn btn-danger">Show</button>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Edit Profile</button>
+
+                            </div>
+                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Experience</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>Expert</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Hourly Rate</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>10$/hr</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Total Projects</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>230</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>English Level</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>Expert</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Availability</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>6 months</p>
+                                            </div>
+                                        </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Your Bio</label><br/>
+                                        <p>Your detail description</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>           
         </div>
+
+
         {% else %}
         <h1>Please <a href="/login">log in</a> first.</h1>
         {% endif %}
     </div>
-{% endblock %}
 
+{% endblock %}
