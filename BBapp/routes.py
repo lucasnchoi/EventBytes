@@ -198,14 +198,24 @@ def events():
     return render_template('events.html', MyEvents = my_events_list, UpcomingEvents = upcoming_events_list, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
 
 user_page = Blueprint('user_page', __name__, template_folder='templates')
-@user_page.route('/user')
+@user_page.route('/user', methods = ['GET', 'POST'])
 def user():
+    form = UpdateAccountForm()
     if session.get('logged_in') == True:
-        firstName = session['user'].get("firstname")
-        lastName = session['user'].get("lastname")
-        phone = session['user'].get("phone")
-        password = session['password']
-        return render_template('user.html', first_name=firstName, last_name=lastName,password = password, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+        image_file = url_for('static', filename = 'uoft-logo')
+        form.firstname.data = session['user'].get("firstname")
+        form.lastname.data  = session['user'].get("lastname")
+        form.phone.data  = session['user'].get("phone")
+        form.email.data =session.get('email')
+        form.password.data = session['password']
+        if form.validate_on_submit():
+            updateUser = {}
+            updateUser["firstname"] = form.firstname.data
+            updateUser["lastname"] = form.lastname.data
+            updateUser["email"] = form.email.data
+            updateUser["password"] = form.password.data
+            db.insert_user(updateUser)
+        return render_template('user.html', email =  session.get('email'), first_name = session['user'].get("firstname"), last_name = session['user'].get("lastname") ,form = form, image_file = image_file, logged_in=session.get('logged_in'), current_time=datetime.utcnow())
     else:
         firstName = None
         lastName = None
