@@ -4,16 +4,32 @@
 {% block title %}Login{% endblock %}
 
 {% block page_content %}
-    {% if logged_in %}
-        <h1>Already logged in, would you like to logout?</h1>
-    {% else %}
-        <div class="page-header">
-            <h1>{% if email %}{% else %} Hello, please login with your email and password.{% endif %}</h1>
-            <h1>{% if email %} {% if validEmail %} Invalid email or password{% else %} Please use your UofT email.{% endif %}{% endif %}</h1>
-        </div>
-    {% endif %}
-    {{ wtf.quick_form(form) }}
-    <p class="signup-subtext">
-        Don't have an account? <a href="/signup">Sign up</a>
-      </p>
+<link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}" />
+
+<style>
+
+</style>
+
+<!-- Logo -->
+<img src="{{ url_for('static', filename='assets/uoft-logo.png') }}" alt="UofT Logo" class="logo"/>
+
+<div class="login-container">
+    <div class="form-container">
+        {% if logged_in %}
+            <h1>Already logged in, would you like to logout?</h1>
+            <form method="post" action="/logout">
+                <button type="submit" class="btn btn-secondary">Logout</button>
+            </form>
+        {% else %}
+            <div class="page-header">
+                <h1>{% if email %}{% else %}Hello, please login with your email and password.{% endif %}</h1>
+                <h1>{% if email %}{% if validEmail %}Invalid email or password{% else %}Please use your UofT email.{% endif %}{% endif %}</h1>
+            </div>
+            {{ wtf.quick_form(form) }}
+        {% endif %}
+        <p class="signup-subtext">
+            Don't have an account? <a href="/signup">Sign up</a>
+        </p>
+    </div>
+</div>
 {% endblock %}
