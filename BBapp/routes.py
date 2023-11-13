@@ -232,7 +232,7 @@ def user():
             form.lastname.data  = session['user'].get("lastname")
             form.phone.data  = session['user'].get("phone")
             form.email.data =session.get('email')
-            form.password.data = session['password']
+            form.password.data = session.get('password')
             
         return render_template('user.html', phone = session['user'].get("phone"), email =  session.get('email'), first_name = session['user'].get("firstname"), last_name = session['user'].get("lastname") ,form = form, image_file = image_file, logged_in=session.get('logged_in'), current_time=datetime.utcnow())
     else:
