@@ -229,16 +229,12 @@ def calendar():
 
 @calendar_page.route("/receiver", methods=['GET', 'POST'])
 def receiver():
-    print(session.get("email"))
     all_events = db.get_user_events(session.get("email"))
-
     data = []
-    print(all_events)
     for event in all_events:
         event_datetime = datetime.strptime(event[3], '%Y-%m-%d %H:%M:%S')
         event_datetime_ms = time.mktime(event_datetime.timetuple()) * 1000
         data.append({"eventName" : event[0], "Location" : event[2], "date": event_datetime_ms, "color": "green"})
-        print(data)
 
     data = jsonify(data)
     return data

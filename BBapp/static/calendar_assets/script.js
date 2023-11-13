@@ -282,11 +282,9 @@
     type: "POST",
     url: "/receiver",
     success: function (response) {
-      //let x = JSON.stringify(response)
       calendarData = response;
       calendarData.forEach(function(event_data) {
         event_data.date = new Date(event_data.date);
-        console.log(event_data);
         });
       var drawCalendar = new Calendar('#calendar', calendarData);
     },
