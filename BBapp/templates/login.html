@@ -13,8 +13,9 @@
     <div class="form-container">
         {% if logged_in %}
             <h1>Already logged in, would you like to logout?</h1>
-            <form method="post" action="/logout">
-                <button type="submit" class="btn btn-secondary">Logout</button>
+            <form method="post" action="/login">
+                <!--<button type="submit" class="btn btn-secondary">Logout</button>-->
+                {{ wtf.quick_form(form) }}
             </form>
         {% else %}
             <div class="page-header">
