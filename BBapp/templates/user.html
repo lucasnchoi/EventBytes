@@ -3,19 +3,8 @@
 {% block title %}User Profile{% endblock %}
 
 {% block page_content %}
-<style>
-    .form-control, .form-control-label, .btn, .card-title, .media-body h5, p {
-        font-size: 1.2em;
-    }
 
-    .profile-info {
-        font-weight: bold;
-    }
-
-    .hidden {
-        display: none;
-    }
-</style>
+<img src="{{ url_for('static', filename='assets/uoft-logo.png') }}" alt="UofT Logo" class="logo"/>
 
 <div class="container mt-5">
     <div class="row">

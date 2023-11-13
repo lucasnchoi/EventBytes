@@ -307,6 +307,18 @@ body {
       color: #fffb01 !important;
   }
   
+  .form-control, .form-control-label, .btn, .card-title, .media-body h5, p {
+      font-size: 1.2em;
+  }
+  
+  .profile-info {
+      font-weight: bold;
+  }
+  
+  .hidden {
+      display: none;
+  }
+  
   .signup-container {
       display: flex;
       align-items: center;
