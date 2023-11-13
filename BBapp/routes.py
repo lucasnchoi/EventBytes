@@ -165,6 +165,7 @@ def login():
             session['user'] = User(fetchedUser[0], fetchedUser[1], fetchedUser[2], fetchedUser[3], fetchedUser[7], fetchedUser[5], fetchedUser[6]).dictionary()
             session['email'] = fetchedUser[2]
             session['logged_in'] = True
+            session['password'] = fetchedUser[4]
             return redirect(url_for('events_page.events'))
 
         return render_template('login.html', logged_in=session.get('logged_in'), form=form, email=session.get('email'), validEmail=session.get('valid_email'), current_time=datetime.utcnow())
@@ -204,16 +205,44 @@ def events():
     return render_template('events.html', MyEvents = my_events_list, UpcomingEvents = upcoming_events_list, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
 
 user_page = Blueprint('user_page', __name__, template_folder='templates')
-@user_page.route('/user')
+@user_page.route('/user', methods = ['GET', 'POST'])
 def user():
+    form = UpdateAccountForm()
     if session.get('logged_in') == True:
-        firstName = session['user'].get("firstname")
-        lastName = session['user'].get("lastname")
-        phone = session['user'].get("phone")
+        image_file = url_for('static', filename = 'uoft-logo')
+        if form.validate_on_submit():
+            updateUser = {}
+            updateUser["firstname"] = form.firstname.data
+            updateUser["lastname"] = form.lastname.data
+            updateUser["email"] = form.email.data
+            updateUser["password"] = form.password.data
+            updateUser["phone"] = form.phone.data
+            print(updateUser)
+            db.delete_user(updateUser['email'])
+            db.insert_user(updateUser['firstname'],updateUser['lastname'],updateUser['email'],updateUser['phone'],updateUser['password'],session['user'].get('OrgId'), session['user'].get('OrgRole'))
+            session['user'] = User(updateUser['firstname'], updateUser['lastname'], updateUser['email'], updateUser['phone'], session['user'].get("userID"), session['user'].get('orgID'), session['user'].get('orgRole')).dictionary()
+            session['password'] = updateUser["password"]
+            session['email'] = updateUser["email"]
+            flash('updated successfully', 'success')
+            print(session['user'])
+            print(updateUser)
+            return redirect(url_for('user_page.user'))
+        elif request.method == "GET":
+
+            form.firstname.data = session['user'].get("firstname")
+            form.lastname.data  = session['user'].get("lastname")
+            form.phone.data  = session['user'].get("phone")
+            form.email.data =session.get('email')
+            form.password.data = session.get('password')
+
+        return render_template('user.html', phone = session['user'].get("phone"), email =  session.get('email'), first_name = session['user'].get("firstname"), last_name = session['user'].get("lastname") ,form = form, image_file = image_file, logged_in=session.get('logged_in'), current_time=datetime.utcnow())
     else:
         firstName = None
         lastName = None
         phone = None
+        return redirect(url_for('login_page.login'))
+
+
     return render_template('user.html', first_name=firstName, last_name=lastName, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
 
 calendar_page = Blueprint('calendar_page', __name__, template_folder='templates')

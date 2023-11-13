@@ -1,0 +1,106 @@
+.events-body {
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+}
+
+.left-view {
+  width: 65%;
+}
+
+.events-search-container {
+  margin-bottom: 10px;
+}
+
+.searchbar {
+  border: 1px solid #222222;
+  border-radius: 8px;
+  width: 490px;
+}
+
+/*source: https://getcssscan.com/css-buttons-examples*/
+.button {
+  background-color: #ffffff;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  color: #222222;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600;
+  line-height: 20px;
+  margin: 0;
+  padding: 6px 10px;
+  position: relative;
+  text-align: center;
+  touch-action: manipulation;
+  transition: box-shadow 0.2s, -ms-transform 0.1s, -webkit-transform 0.1s,
+    transform 0.1s;
+  width: auto;
+}
+
+.button:hover {
+  background-color: #b8b8b8;
+}
+
+.button:focus-visible {
+  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
+  transition: box-shadow 0.2s;
+}
+
+.button:active {
+  background-color: #f7f7f7;
+  border-color: #000000;
+  transform: scale(0.96);
+}
+
+.button:disabled {
+  border-color: #dddddd;
+  color: #dddddd;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.date-selector {
+  border: 1px solid #222222;
+  border-radius: 8px;
+}
+
+.discover-events-container {
+  background-color: #ffffff;
+  border: 1px solid black;
+  border-radius: 2%;
+  margin-right: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-content: space-between;
+  justify-content: flex-start;
+  padding: 3%;
+}
+
+.event-card {
+  background-color: #ffffff;
+  border: 1px solid black;
+  border-radius: 2%;
+  width: 48%;
+  height: 250px;
+  padding: 3%;
+}
+
+.my-events {
+  background-color: #ffffff;
+  border: 1px solid black;
+  border-radius: 3%;
+  width: 150%;
+  height: 35%;
+  overflow: scroll;
+}
+
+.upcoming-events {
+  background-color: #ffffff;
+  border: 1px solid black;
+  border-radius: 3%;
+  width: 150%;
+  height: 35%;
+  overflow: scroll;
+}

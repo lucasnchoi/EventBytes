@@ -2,7 +2,8 @@
 #app is the Flask object created in __init__.py
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, PasswordField,TextAreaField,DateTimeLocalField,IntegerField
-from wtforms.validators import DataRequired, Email
+from wtforms.validators import DataRequired, Email, Length
+from flask_wtf.file import FileField, FileAllowed
 
 class CreateEventForm(FlaskForm):
     eventTypes = ['Academic', 'Arts', 'Athletics', 'Career', 'Cultural', 'Health', 'Social','Music', 'Technology', 'Science', 'Food', 'Environmental', 'Volunteer', 'Travel','Gaming', 'Fashion', 'Fitness', 'Business', 'Literature', 'Film', 'Religious','Other']
@@ -41,3 +42,14 @@ class LoginForm(FlaskForm):
 class LogoutForm(FlaskForm):
     submit = SubmitField('Logout')
 
+class UpdateAccountForm(FlaskForm):
+    firstname = StringField('First name',
+                           validators=[DataRequired(), Length(min=2, max=20)])
+    lastname = StringField('Last name',
+                           validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField('Email',
+                        validators=[DataRequired(), Email()])
+    password = StringField('Password', validators=[DataRequired()])
+    picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    phone = StringField('Phone', validators=[DataRequired()])
+    submit = SubmitField('Update')
