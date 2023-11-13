@@ -242,15 +242,6 @@ def user():
         phone = None
         return redirect(url_for('login_page.login'))
 
-def calendar():
-    if session.get('logged_in') == True:
-        return render_template('calendar.html', logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
-    else:
-        firstName = None
-        lastName = None
-        phone = None
-        return render_template('user.html', first_name=firstName, last_name=lastName, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
-
 calendar_page = Blueprint('calendar_page', __name__, template_folder='templates')
 @calendar_page.route('/calendar', methods=['GET', 'POST'])
 def calendar():
