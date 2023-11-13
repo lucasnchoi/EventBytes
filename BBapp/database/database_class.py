@@ -297,9 +297,117 @@ class Database:
         self.mycursor.execute(command,(orgID,))
         results = self.mycursor.fetchall()
         command = "SELECT * FROM events WHERE eventID = %s"
-        users = []
+        events = []
         for result in results:
             self.mycursor.execute(command,(result[0],))
             tmp = self.mycursor.fetchall()
-            users.append(tmp[0])
-        return users
+            events.append(tmp[0])
+        return events
+    
+    def search_events(self, user_query, for_sub, current_time):
+        # user_query can be either event name, organization name or location as indicated by user in the search bar
+        command = """
+        SELECT e.*
+        FROM events e
+        JOIN organizations o ON e.organizationId = o.orgID
+        WHERE (e.name LIKE %s OR o.name LIKE %s OR e.location LIKE %s) AND e.time > %s 
+        ORDER BY time
+        """
+        #for displaying search results of My_Events on dashboard
+        command_sub = """
+        SELECT e.*
+        FROM events e
+        JOIN organizations o ON e.organizationId = o.orgID JOIN event_subs s ON e.eventId = s.eventID
+        WHERE (e.name LIKE %s OR o.name LIKE %s OR e.location LIKE %s) AND e.time > %s 
+        ORDER BY time
+        """
+
+        if for_sub:
+            self.mycursor.execute(command_sub,(user_query, user_query, user_query, current_time))
+        else:
+            self.mycursor.execute(command,(user_query, user_query, user_query, current_time))
+        
+
+        searched_events = self.mycursor.fetchall()
+        return searched_events
+
+
+    def search_UserEvents(self, user_query, userId):
+
+        command = """
+        SELECT * 
+        FROM events e
+        JOIN organizations o ON e.organizationId = o.orgID
+        WHERE (e.name LIKE %s OR o.name LIKE %s OR e.location LIKE %s) AND e.creatorId = %s
+        ORDER BY time
+        """
+        self.mycursor.execute(command,(user_query, user_query, user_query, userId))
+
+        searched_userEvents = self.mycursor.fetchall()
+        return searched_userEvents
+
+
+    def filter_events_byDate(self, start_date, end_date, for_sub, current_time):
+        
+        command = """
+        SELECT *
+        FROM events
+        WHERE (time BETWEEN %s AND %s) AND e.time > %s 
+        ORDER BY time ASC;
+        """
+
+        command_sub = """
+        SELECT *
+        FROM events 
+        JOIN event_subs ON events.eventId = event_subs.eventID
+        WHERE (time BETWEEN %s AND %s) AND e.time > %s
+        ORDER BY time ASC;
+        """
+
+        if for_sub:
+            self.mycursor.execute(command_sub,(start_date, end_date, current_time))
+        else:
+            self.mycursor.execute(command,(start_date, end_date, current_time))
+
+        filtered_events = self.mycursor.fetchall()
+        return filtered_events
+    
+
+
+    def filter_UserEvents_byDate(self, start_date, end_date, userId):
+
+        command = """
+        SELECT *
+        FROM events
+        WHERE (time BETWEEN %s AND %s) AND creatorId = %s 
+        ORDER BY time ASC;
+        """
+
+        self.mycursor.execute(command,(start_date, end_date, userId))
+
+        filtered_userEvents = self.mycursor.fetchall()
+        return filtered_userEvents
+    
+
+
+    def filter_event_by_type(self, filter_type, for_sub, current_time):
+        
+        command = "SELECT * FROM events WHERE type = %s"
+        command_sub = "SELECT * FROM events JOIN event_subs ON events.eventId = event_subs.eventID WHERE type = %s AND time > %s"
+        if for_sub:
+            self.mycursor.execute(command_sub, filter_type, current_time)
+        else:
+            self.mycursor.execute(command, filter_type, current_time)
+
+        filtered_events = self.mycursor.fetchall()
+        return filtered_events
+    
+
+
+    def filter_UserEvent_by_type(self, filter_type, userId):
+        
+        command = "SELECT * FROM events WHERE type = %s AND creatorId = %s"
+        self.mycursor.execute(command, (filter_type, userId))
+
+        filtered_userEvents = self.mycursor.fetchall()
+        return filtered_userEvents

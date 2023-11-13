@@ -11,12 +11,6 @@ db = Database()
 home_page = Blueprint('home_page', __name__, template_folder='templates')
 @home_page.route('/')
 def home():
-    filtered_events = []  # Initialize as empty if no search query is present
-    search_query = request.args.get('query')
-
-    if search_query:
-        filtered_events = db.search_events(search_query)
-
     #return render_template('index.html', current_time=datetime.utcnow(), filtered_events=filtered_events, search_query=search_query)
     return render_template('index.html', current_time=datetime.utcnow())
 
@@ -184,7 +178,29 @@ def login():
             return redirect(url_for('login_page.login'))
         return render_template('login.html', logged_in=session.get('logged_in'), form=form, email=session.get('email'), current_time=datetime.utcnow())
 
+
+user_page = Blueprint('user_page', __name__, template_folder='templates')
+@user_page.route('/user')
+def user():
+    if session.get('logged_in') == True:
+        firstName = session['user'].get("firstname")
+        lastName = session['user'].get("lastname")
+        phone = session['user'].get("phone")
+    else:
+        firstName = None
+        lastName = None
+        phone = None
+    return render_template('user.html', first_name=firstName, last_name=lastName, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+
+
+
+
+
 events_page = Blueprint('events_page', __name__, template_folder='templates')
+search_page = Blueprint('filtered_event_page', __name__, template_folder='templates')
+filter_dates = Blueprint('filter_date', __name__, template_folder='templates')
+
+
 @events_page.route('/events')
 def events():
     my_events_list = []
@@ -208,44 +224,96 @@ def events():
             upcoming_events_list = False
     return render_template('events.html', MyEvents = my_events_list, UpcomingEvents = upcoming_events_list, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
 
-user_page = Blueprint('user_page', __name__, template_folder='templates')
-@user_page.route('/user')
-def user():
-    if session.get('logged_in') == True:
-        firstName = session['user'].get("firstname")
-        lastName = session['user'].get("lastname")
-        phone = session['user'].get("phone")
-    else:
-        firstName = None
-        lastName = None
-        phone = None
-    return render_template('user.html', first_name=firstName, last_name=lastName, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
 
-
-search_page = Blueprint('search_page', __name__, template_folder='templates')
-
-
-@search_page.route('/search', methods=['GET'])
 def search():
-    search_query = request.args.get('query')
-    events = db.search_events(search_query)
-    return render_template('index.html', current_time=datetime.utcnow(), filtered_events=events, search_query=search_query)
+    search_results_upcoming = []
+    #search_results_subscribed = []
+    search_results_userCreated = []
+
+    if session.get('logged_in') == True and request.method == 'GET':
+
+        search_query = request.args.get('user_query')
+        searched_events_upcoming = db.search_events(search_query, False, datetime.utcnow())
+        #searched_events_subscribed = db.search_events(search_query, True)
+        userId = session['user'].get("userID")
+        searched_events_userCreated = db.search_UserEvents(search_query, userId)
+
+        if searched_events_upcoming != []:
+            for event_fields in searched_events_upcoming:
+                event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+                search_results_upcoming.append(event.to_dict())
+        else:
+            search_results_upcoming = False
+    
+        if searched_events_userCreated != []:
+            for event_fields in searched_events_userCreated:
+                event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+                search_results_userCreated.append(event.to_dict())
+        
+        else:
+            search_results_userCreated = False;
+
+    return render_template('events.html', UpcomingEvents = search_results_upcoming, MyEvents = search_results_userCreated, current_time=datetime.utcnow())
 
 
-filter_date = Blueprint('filter_date', __name__, template_folder='templates')
+
+def filter_date():
+
+    date_filtered_upcomingEvents = [];
+    date_filtered_myEvents = []
+    start_date = request.args.get('start-date')
+    end_date = request.args.get('end-date')
+
+    if start_date is not None:
+
+        if end_date is None:
+            end_date = start_date
+
+        events_byDate = db.filter_events_byDate(start_date, end_date, False, datetime.utcnow())
+        if events_byDate != []:
+            for event_fields in events_byDate:
+                event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+                date_filtered_upcomingEvents.append(event.to_dict())
+        else:
+            date_filtered_upcomingEvents = False
+
+        userId = session['user'].get("userID")
+        myEvents_byDate = db.filter_UserEvents_byDate(start_date, end_date, userId)
+        if myEvents_byDate != []:
+            for event_fields in myEvents_byDate:
+                event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+                date_filtered_myEvents.append(event.to_dict())
+        else:
+            date_filtered_myEvents = False
 
 
-@filter_date.route('/filter', methods=['GET'])
-def filter():
-   
-    selected_date = request.args.get('date')  # Get the selected date from the request
+    return render_template('events.html', UpcomingEvents = date_filtered_upcomingEvents, MyEvents = date_filtered_myEvents, current_time=datetime.utcnow())
 
-    if selected_date:
- 
-        events = db.get_events_for_selected_date(selected_date)
+
+def filter_type():
+
+    type_filtered_upcomingEvents = [];
+    type_filtered_myEvents = []
+    filter_type = request.args.get('filter_query')
+
+    filtered_events_upcoming = db.filter_event_by_type(filter_type, False, datetime.utcnow())
+    userId = session['user'].get("userID")
+    filtered_events_userCreated = db.filter_UserEvent_by_type(filter_type, userId)
+
+    if filtered_events_upcoming != []:
+            for event_fields in filtered_events_upcoming:
+                event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+                type_filtered_upcomingEvents.append(event.to_dict())
     else:
-        # Handle the case where no date is provided
-        events = []
+        type_filtered_upcomingEvents = False
+    
+        if filtered_events_userCreated != []:
+            for event_fields in filtered_events_userCreated:
+                event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+                type_filtered_myEvents.append(event.to_dict())
+        
+        else:
+            type_filtered_myEvents = False;
 
-    # Render a template to display the events
-    return render_template('events_for_selected_date.html', events=events, selected_date=selected_date)
+    return render_template('events.html', UpcomingEvents = type_filtered_upcomingEvents, MyEvents = type_filtered_myEvents, current_time=datetime.utcnow())
+
