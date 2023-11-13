@@ -1,5 +1,6 @@
 from flask import Flask, render_template, session, redirect, url_for, flash, Blueprint, request, jsonify
 from datetime import datetime
+import time
 from BBapp.forms import *
 from BBapp.database import Database
 from BBapp.user import User
@@ -219,9 +220,19 @@ calendar_page = Blueprint('calendar_page', __name__, template_folder='templates'
 @calendar_page.route('/calendar', methods=['GET', 'POST'])
 def calendar():
     return render_template('calendar.html', logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
-
 @calendar_page.route("/receiver", methods=['GET', 'POST'])
-def postME():
-   data = {"name": "test1", "value": 0}
-   data = jsonify(data)
-   return data
+def receiver():
+    print(session.get("email"))
+    all_events = db.get_user_events(session.get("email"))
+
+    data = []
+    print(all_events)
+    for event in all_events:
+        event_datetime = datetime.strptime(event[3], '%Y-%m-%d %H:%M:%S')
+        event_datetime_ms = time.mktime(event_datetime.timetuple()) * 1000
+        data.append({"eventName" : event[0], "Location" : event[2], "date": event_datetime_ms, "color": "green"})
+        print(data)
+
+    data = jsonify(data)
+    return data
+
