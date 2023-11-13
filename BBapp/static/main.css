@@ -49,13 +49,3 @@ body {
   opacity: 1;
 }
 
-.link-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 3%;
-}
-
-.link-container a {
-  color: rgb(4, 6, 99);
-  font-size: 25px;
-}
