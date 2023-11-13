@@ -3,16 +3,6 @@
   const button = document.getElementById("theButton")
   window.Calendar = Calendar;
 
-button.onclick=(function () {
-  $.ajax({
-    type: "POST",
-    url: "/receiver",
-    success: function (response) {
-      let x = JSON.stringify(response)
-      console.log(x);
-    },
-  });
-});
 
   var today = moment();
 
@@ -238,12 +228,14 @@ button.onclick=(function () {
     events.forEach(function(ev) {
       var div = createElement('div', 'event');
       var square = createElement('div', 'event-category ' + ev.color);
-      var time = createElement('div', '', ev.date);
-      var span = createElement('span', '', ev.eventName);
+      var time = createElement(span, '', ev.date.format(' hh:mm A'));
+      var span = createElement('span', '', ev.eventName + ":");
+      var location = createElement('span', '', " at " + ev.Location);
 
       div.appendChild(square);
       div.appendChild(span);
       div.appendChild(time);
+      div.appendChild(location);
       wrapper.appendChild(div);
     });
 
@@ -285,15 +277,23 @@ button.onclick=(function () {
 }();
 
 !function() {
-  var data = [
+  calendarData = []
+    $.ajax({
+    type: "POST",
+    url: "/receiver",
+    success: function (response) {
+      //let x = JSON.stringify(response)
+      calendarData = response;
+      calendarData.forEach(function(event_data) {
+        event_data.date = new Date(event_data.date);
+        console.log(event_data);
+        });
+      var drawCalendar = new Calendar('#calendar', calendarData);
+    },
+    error: function() {
+                    alert("Error requesting user's event data.");
+                }
 
-    { eventName: 'Test1', calendar: 'Other', color: 'orange' , date: new Date(2023, 11, 5, 19, 20, 0)},
-    { eventName: 'Test2', calendar: 'Other', color: 'green' , date: new Date(2023, 11, 2, 19, 20, 0) },
-    { eventName: 'Test3', calendar: 'Other', color: 'green' , date: new Date(2023, 11, 3, 19, 20, 0) },
-    { eventName: 'Test4', calendar: 'Other', color: 'green' , date: new Date(2023, 11, 1, 19, 20, 0) }
-  ];
-
-
-  var drawCalendar = new Calendar('#calendar', data);
+  });
 
 }();
