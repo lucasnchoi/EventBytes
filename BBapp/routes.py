@@ -203,11 +203,6 @@ def user():
     form = UpdateAccountForm()
     if session.get('logged_in') == True:
         image_file = url_for('static', filename = 'uoft-logo')
-        form.firstname.data = session['user'].get("firstname")
-        form.lastname.data  = session['user'].get("lastname")
-        form.phone.data  = session['user'].get("phone")
-        form.email.data =session.get('email')
-        form.password.data = session['password']
         if form.validate_on_submit():
             updateUser = {}
             updateUser["firstname"] = form.firstname.data
@@ -217,10 +212,23 @@ def user():
             updateUser["phone"] = form.phone.data
             print(updateUser)
             db.delete_user(updateUser['email'])
-            db.insert_user(updateUser['firstname'],updateUser['lastname'],updateUser['email'],updateUser['phone'],updateUser['password'],session.get('OrgId'), session.get('OrgRole'))
+            db.insert_user(updateUser['firstname'],updateUser['lastname'],updateUser['email'],updateUser['phone'],updateUser['password'],session['user'].get('OrgId'), session['user'].get('OrgRole'))
+            session['user'] = User(updateUser['firstname'], updateUser['lastname'], updateUser['email'], updateUser['phone'], session['user'].get("userID"), session['user'].get('orgID'), session['user'].get('orgRole')).dictionary()
+            session['password'] = updateUser["password"]
+            session['email'] = updateUser["email"]
             flash('updated successfully', 'success')
+            print(session['user'])
+            print(updateUser)
             return redirect(url_for('user_page.user'))
-        return render_template('user.html', email =  session.get('email'), first_name = session['user'].get("firstname"), last_name = session['user'].get("lastname") ,form = form, image_file = image_file, logged_in=session.get('logged_in'), current_time=datetime.utcnow())
+        elif request.method == "GET":
+            
+            form.firstname.data = session['user'].get("firstname")
+            form.lastname.data  = session['user'].get("lastname")
+            form.phone.data  = session['user'].get("phone")
+            form.email.data =session.get('email')
+            form.password.data = session['password']
+            
+        return render_template('user.html', phone = session['user'].get("phone"), email =  session.get('email'), first_name = session['user'].get("firstname"), last_name = session['user'].get("lastname") ,form = form, image_file = image_file, logged_in=session.get('logged_in'), current_time=datetime.utcnow())
     else:
         firstName = None
         lastName = None
