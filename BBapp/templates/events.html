@@ -3,6 +3,7 @@
 {% block title %}Dashboard{% endblock %} {% block page_content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='events.css') }}" />
 
+<img src="{{ url_for('static', filename='assets/uoft-logo.png') }}" alt="UofT Logo" class="logo"/>
 <div class="events-container">
   {% if logged_in %}
   <h1><b>Events Dashboard</b></h1>
