@@ -15,8 +15,10 @@ class TestEventHubFeatures(unittest.TestCase):
         self.initialize_test_data()
 
     def initialize_test_data(self):
-        # Add test data to the database for testing
-        # ...
+        self.insert_organization("ABC Corp", "exploreABC@gmail.com", "we help with career exploration", "Career networking", "1234")
+        self.insert_event_org_parent("please come", "ABC Corp")
+        self.db.insert_event("career fair", "networking", "ex200", "2023-12-03T08:30", "please come", "none", "none", "none", "100", "johnsmith@gmail.com", "001", "01")
+        
 
     def test_search_events(self):
         response = self.client.get('/search?query=test_query')
