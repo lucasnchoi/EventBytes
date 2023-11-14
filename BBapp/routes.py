@@ -36,6 +36,9 @@ def create_event():
         if form.time.data < datetime.now():
             errors.append("Events cannot be created in the past")
 
+        if (form.size.data == None):
+            form.size.data = 0
+            
         if form.size.data < 0:
             errors.append("Attendee size cannot be negative")
 
