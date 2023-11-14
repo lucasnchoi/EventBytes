@@ -286,21 +286,22 @@ def events():
         for types in event_types:
             if search_query == types:
                 searched_upcoming_events = filter_type(search_query, True)
+             
                 searched_my_events = filter_type(search_query, False)
+                
                 break
             else:
 
                 searched_upcoming_events = search(search_query, True)
-          
+                
                 searched_my_events = search(search_query, False)
-           
+                
                 for event in searched_upcoming_events:
-                    
+                    print(event)
                 break
 
         return render_template('events.html', MyEvents = searched_my_events, UpcomingEvents = searched_upcoming_events, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
-       # elif (type == 'filter'):
-         #   print("filtering")
+   
     else:
 
         my_events_list = []
