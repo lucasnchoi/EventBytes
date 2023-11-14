@@ -317,8 +317,8 @@ class Database:
     def force_reconnect(self):
         self.mydb.reconnect()
 
-            events.append(tmp[0])
-        return events
+        #events.append(tmp[0])
+        #return events
     
     def search_events(self, user_query, for_sub, current_time):
         # user_query can be either event name, organization name or location as indicated by user in the search bar

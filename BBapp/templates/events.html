@@ -1,23 +1,18 @@
-{% extends "base.html" %} {% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
 <link rel="stylesheet" type="text/css" href="../static/main.css" />
 {% block title %}Dashboard{% endblock %} {% block page_content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='events.css') }}" />
 
+<img src="{{ url_for('static', filename='assets/uoft-logo.png') }}" alt="UofT Logo" class="logo"/>
 <div class="events-container">
   {% if logged_in %}
   <h1><b>Events Dashboard</b></h1>
 
-  <!--
-  <div class="events-search-container">
-    <input class="searchbar" type="text" placeholder="Search for an Event" id = "searchbar" />
-    <button class="button" style="margin-left: 5px" onclick="searchEvent()">Search</button>
-  </div>
--->
-<form method = "post" action="/events">
-  <input type="text" name="search_value" >
-  <input type="submit" value="Search">
-</form>
-
+  <form method = "post" action="/events">
+    <input type="text" name="search_value" >
+    <input type="submit" value="Search">
+  </form>
+  
 <!--
 <form method = "post" action="/filter">
   <label>
@@ -70,17 +65,31 @@
 
   </div>
 
-
-
   <div class="events-body">
 
     <div class="left-view"> 
         <h2>Discover Events</h2>
+        <title>Event Popup Example</title>
+        <style>
+          .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+          }
+        </style>
 
         <div class="discover-events-container">
-            {% if UpcomingEvents %}
+          {% if UpcomingEvents %}
             {% for event in UpcomingEvents %}
-            <div class="event-card">
+              <div class="event-card">
                 <div class="event-title" style="text-align: center;"><b>{{event.name}}</b><br/>{{event.type}} <br/></div>
                 <br/>
                 <b>Time: </b>{{event.time}}<br/>
@@ -100,10 +109,9 @@
                 </div>
               </div>
             {% endfor %}
-                {% else %}
-                    <div class="no-events-text" style='text-align:center'>No events to show.</div>
-            {%endif%}
-
+          {% else %}
+            <div class="no-events-text" style='text-align:center'>No events to show.</div>
+          {% endif %}
         </div>
 
         <script>
@@ -172,8 +180,6 @@
       </div>
     </div>
   </div>
-  
-
 
   </div>
 
@@ -183,21 +189,18 @@
   
   {% endif %}
 </div>
+
 <script>
-    function searchEvent() {
-    fetch('/events', {
-      method: 'POST', 
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({type: 'search', search_query: document.getElementById("searchbar").value })
-    })
-  }
+  function searchEvent() {
+  fetch('/events', {
+    method: 'POST', 
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({type: 'search', search_query: document.getElementById("searchbar").value })
+  })
+}
 
 </script>
 
-
-
 {% endblock %}
-
-
