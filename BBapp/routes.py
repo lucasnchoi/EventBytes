@@ -1,7 +1,9 @@
+
 import os
 import secrets
-from flask import Flask, render_template, session, redirect, url_for, flash, Blueprint, request
+from flask import Flask, render_template, session, redirect, url_for, flash, Blueprint, request, jsonify
 from datetime import datetime
+import time
 from BBapp.forms import *
 from BBapp.database import Database
 from BBapp.user import User
@@ -11,7 +13,7 @@ from PIL import Image
 
 UPLOAD_FOLDER = './BBapp/static/profile_pics'
 
-db = Database() 
+db = Database()
 
 home_page = Blueprint('home_page', __name__, template_folder='templates')
 @home_page.route('/')
@@ -26,18 +28,18 @@ def create_event():
 
     if session.get('logged_in') != True:
         return redirect(url_for('login_page.login'))
-    
+
     if request.method == 'POST':
         errors = []
         newEvent = {}
 
         if form.time.data < datetime.now():
             errors.append("Events cannot be created in the past")
-        
+
         if form.size.data < 0:
             errors.append("Attendee size cannot be negative")
-            
-        
+
+
         if (len(errors) > 0):
             return render_template('createEvent.html', form=form, user = session['user'],errors=errors)
 
@@ -67,7 +69,7 @@ def create_event():
             print(e)
             return render_template('createEvent.html', form=form, user = session['user'],errors=["Failed to create event - {}".format(str(e))], success=False)
 
- 
+
     return render_template('createEvent.html', form=form, user = session['user'],errors=[],success = None)
 
 signup_page = Blueprint('signup_page', __name__, template_folder='templates')
@@ -79,7 +81,7 @@ def signup():
 
     if request.method == 'POST':
         errors = []
-        signupUser = {}  
+        signupUser = {}
 
         if "utoronto" not in form.email.data:
             errors.append("Please use a valid UofT email address")
@@ -161,18 +163,18 @@ def login():
                 return redirect(url_for('login_page.login')) #user does not exist
             else:
                 fetchedUser = fetchedUser[0]
-          
+
             savedPassword = fetchedUser[4] #password is the 5th column in the table
             if (savedPassword != form.password.data):
                 return redirect(url_for('login_page.login'))
-            
+
             #valid login
             session['user'] = User(fetchedUser[0], fetchedUser[1], fetchedUser[2], fetchedUser[3], fetchedUser[7], fetchedUser[5], fetchedUser[6]).dictionary()
             session['email'] = fetchedUser[2]
             session['logged_in'] = True
             session['password'] = fetchedUser[4]
             return redirect(url_for('events_page.events'))
-          
+
         return render_template('login.html', logged_in=session.get('logged_in'), form=form, email=session.get('email'), validEmail=session.get('valid_email'), current_time=datetime.utcnow())
     else:
         form = LogoutForm()
@@ -256,7 +258,7 @@ def user():
             print(updateUser)
             return redirect(url_for('user_page.user'))
         elif request.method == "GET":
-            
+
             form.firstname.data = session['user'].get("firstname")
             form.lastname.data  = session['user'].get("lastname")
             form.phone.data  = session['user'].get("phone")
@@ -267,7 +269,6 @@ def user():
             image_file = url_for('static', filename = 'profile_pics/' + 'default.jpg')
         else:
             image_file = url_for('static', filename = 'profile_pics/' + session['picture'])
-            
         return render_template('user.html', phone = session['user'].get("phone"), email =  session.get('email'), first_name = session['user'].get("firstname"), last_name = session['user'].get("lastname") ,form = form, image_file = image_file, logged_in=session.get('logged_in'), current_time=datetime.utcnow())
     else:
         firstName = None
@@ -275,3 +276,25 @@ def user():
         phone = None
         return redirect(url_for('login_page.login'))
 
+calendar_page = Blueprint('calendar_page', __name__, template_folder='templates')
+@calendar_page.route('/calendar', methods=['GET', 'POST'])
+def calendar():
+    if session.get('logged_in') == True:
+        return render_template('calendar.html', logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+    else:
+        firstName = None
+        lastName = None
+        phone = None
+        return render_template('user.html', first_name=firstName, last_name=lastName, phone=phone, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+
+@calendar_page.route("/receiver", methods=['GET', 'POST'])
+def receiver():
+    all_events = db.get_user_events(session.get("email"))
+    data = []
+    for event in all_events:
+        event_datetime = datetime.strptime(event[3], '%Y-%m-%d %H:%M:%S')
+        event_datetime_ms = time.mktime(event_datetime.timetuple()) * 1000
+        data.append({"eventName" : event[0], "Location" : event[2], "date": event_datetime_ms, "color": "green"})
+
+    data = jsonify(data)
+    return data
