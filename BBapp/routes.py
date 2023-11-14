@@ -190,17 +190,29 @@ def login():
 events_page = Blueprint('events_page', __name__, template_folder='templates')
 @events_page.route('/events')
 def events():
+
     my_events_list = []
     upcoming_events_list = []
     if session.get('logged_in') == True:
         fetchedUserCreatedEvents = db.get_user_created_events(session['user'].get("userID"), datetime.utcnow())
-        #add events user has registered for (when we have registration functionality)
         if fetchedUserCreatedEvents != []:
             for event_iter in fetchedUserCreatedEvents:
                 event = Event(event_iter[0], event_iter[1], event_iter[2], event_iter[3], event_iter[4], event_iter[5], event_iter[6], event_iter[7], event_iter[8], event_iter[9], event_iter[10], event_iter[11], event_iter[12])
                 if (event.get_id() != -1): #check if the event was properly fetched
                     my_events_list.append(event.to_dict())
-        else:
+
+        fetchedUserSubscribedEvents = db.get_user_subscribed_events(session['user'].get("userID"))
+        registered_eventIDs = []
+        if fetchedUserSubscribedEvents != []:
+            for event_sub in fetchedUserSubscribedEvents:
+                if event_sub[1] not in registered_eventIDs:
+                    event_reg = db.get_event_by_id(event_sub[1])
+                    for event_iter in event_reg:
+                        registered_event = Event(event_iter[0], event_iter[1], event_iter[2], event_iter[3], event_iter[4], event_iter[5], event_iter[6], event_iter[7], event_iter[8], event_iter[9], event_iter[10], event_iter[11], event_iter[12])
+                        my_events_list.append(registered_event.to_dict())
+                        registered_eventIDs.append(event_sub[1])
+        
+        if fetchedUserCreatedEvents == [] and fetchedUserSubscribedEvents == []:
             my_events_list = False
         fetchedUpcomingEvents = db.get_all_upcoming_events(datetime.utcnow())
         if fetchedUpcomingEvents != []:
@@ -211,7 +223,17 @@ def events():
             upcoming_events_list = False
     return render_template('events.html', MyEvents = my_events_list, UpcomingEvents = upcoming_events_list, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
 
-
+registration_page = Blueprint('registration_page', __name__, template_folder='templates')
+@registration_page.route('/events/registration', methods=['POST'])
+def registration():
+    eventID = request.get_json().get("eventID")
+    if request.method == 'POST' and eventID != None and session.get('logged_in') == True:
+        db.insert_event_subscriber(session['user'].get("userID"), eventID)
+        return redirect(url_for('events_page.events'))
+    else:
+        print("Error: eventID is None or user is not logged in")
+        return redirect(url_for('events_page.events'))
+        
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)
@@ -232,14 +254,13 @@ def user():
     form = UpdateAccountForm()
     if session.get('logged_in') == True:
         
-        if form.validate_on_submit():
+        if request.method == "POST":
             updateUser = {}
             updateUser["firstname"] = form.firstname.data
             updateUser["lastname"] = form.lastname.data
             updateUser["email"] = form.email.data
             updateUser["password"] = form.password.data
             updateUser["phone"] = form.phone.data
-            print(updateUser)
             db.delete_user(updateUser['email'])
             db.insert_user(updateUser['firstname'],updateUser['lastname'],updateUser['email'],updateUser['phone'],updateUser['password'],session['user'].get('OrgId'), session['user'].get('OrgRole'))
             session['user'] = User(updateUser['firstname'], updateUser['lastname'], updateUser['email'], updateUser['phone'], session['user'].get("userID"), session['user'].get('orgID'), session['user'].get('orgRole')).dictionary()
@@ -254,8 +275,6 @@ def user():
                 session['picture'] = form.picture.data.filename
                 print(session['picture'])
             flash('updated successfully', 'success')
-            print(session['user'])
-            print(updateUser)
             return redirect(url_for('user_page.user'))
         elif request.method == "GET":
 
@@ -264,11 +283,10 @@ def user():
             form.phone.data  = session['user'].get("phone")
             form.email.data =session.get('email')
             form.password.data = session.get('password')
-            form.picture.data = session['picture']
-        if not session['picture']:
-            image_file = url_for('static', filename = 'profile_pics/' + 'default.jpg')
-        else:
-            image_file = url_for('static', filename = 'profile_pics/' + session['picture'])
+        image_file = url_for('static', filename='profile_pics/' + session['picture']) if session and 'picture' in session and session['picture'] is not None else url_for('static', filename='profile_pics/default.jpg')
+        form.picture.data = image_file
+
+
         return render_template('user.html', phone = session['user'].get("phone"), email =  session.get('email'), first_name = session['user'].get("firstname"), last_name = session['user'].get("lastname") ,form = form, image_file = image_file, logged_in=session.get('logged_in'), current_time=datetime.utcnow())
     else:
         firstName = None
@@ -289,7 +307,13 @@ def calendar():
 
 @calendar_page.route("/receiver", methods=['GET', 'POST'])
 def receiver():
+    #Include user's registered events as well as user's created events
     all_events = db.get_user_events(session.get("email"))
+    userID = (db.get_user(session.get("email")))[-1][-1]
+    all_user_events = db.get_user_created_events(userID, datetime.utcnow())
+    for events in all_user_events:
+        if events not in all_events:
+            all_events.append(events)
     data = []
     for event in all_events:
         event_datetime = datetime.strptime(event[3], '%Y-%m-%d %H:%M:%S')
@@ -298,3 +322,12 @@ def receiver():
 
     data = jsonify(data)
     return data
+
+force_reload_page = Blueprint('forceReload', __name__, template_folder='templates')
+@force_reload_page.route('/forceReload', methods=['GET'])
+def forceReload():
+    try:
+        db.force_reconnect()
+        return jsonify(success=True)
+    except Exception as e:
+        return jsonify(success=False, error=str(e))
