@@ -193,6 +193,7 @@ def events():
 
     my_events_list = []
     upcoming_events_list = []
+    event
     if session.get('logged_in') == True:
         fetchedUserCreatedEvents = db.get_user_created_events(session['user'].get("userID"), datetime.utcnow())
         if fetchedUserCreatedEvents != []:
@@ -202,12 +203,15 @@ def events():
                     my_events_list.append(event.to_dict())
 
         fetchedUserSubscribedEvents = db.get_user_subscribed_events(session['user'].get("userID"))
+        registered_eventIDs = []
         if fetchedUserSubscribedEvents != []:
             for event_sub in fetchedUserSubscribedEvents:
-                event_reg = db.get_event_by_id(event_sub[1])
-                for event_iter in event_reg:
-                    registered_event = Event(event_iter[0], event_iter[1], event_iter[2], event_iter[3], event_iter[4], event_iter[5], event_iter[6], event_iter[7], event_iter[8], event_iter[9], event_iter[10], event_iter[11], event_iter[12])
-                    my_events_list.append(registered_event.to_dict())
+                if event_sub[1] not in registered_eventIDs:
+                    event_reg = db.get_event_by_id(event_sub[1])
+                    for event_iter in event_reg:
+                        registered_event = Event(event_iter[0], event_iter[1], event_iter[2], event_iter[3], event_iter[4], event_iter[5], event_iter[6], event_iter[7], event_iter[8], event_iter[9], event_iter[10], event_iter[11], event_iter[12])
+                        my_events_list.append(registered_event.to_dict())
+                        registered_eventIDs.append(event_sub[1])
         
         if fetchedUserCreatedEvents == [] and fetchedUserSubscribedEvents == []:
             my_events_list = False
