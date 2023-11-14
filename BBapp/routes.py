@@ -232,14 +232,13 @@ def user():
     form = UpdateAccountForm()
     if session.get('logged_in') == True:
         
-        if form.validate_on_submit():
+        if request.method == "POST":
             updateUser = {}
             updateUser["firstname"] = form.firstname.data
             updateUser["lastname"] = form.lastname.data
             updateUser["email"] = form.email.data
             updateUser["password"] = form.password.data
             updateUser["phone"] = form.phone.data
-            print(updateUser)
             db.delete_user(updateUser['email'])
             db.insert_user(updateUser['firstname'],updateUser['lastname'],updateUser['email'],updateUser['phone'],updateUser['password'],session['user'].get('OrgId'), session['user'].get('OrgRole'))
             session['user'] = User(updateUser['firstname'], updateUser['lastname'], updateUser['email'], updateUser['phone'], session['user'].get("userID"), session['user'].get('orgID'), session['user'].get('orgRole')).dictionary()
@@ -254,8 +253,6 @@ def user():
                 session['picture'] = form.picture.data.filename
                 print(session['picture'])
             flash('updated successfully', 'success')
-            print(session['user'])
-            print(updateUser)
             return redirect(url_for('user_page.user'))
         elif request.method == "GET":
 
@@ -264,11 +261,14 @@ def user():
             form.phone.data  = session['user'].get("phone")
             form.email.data =session.get('email')
             form.password.data = session.get('password')
-            form.picture.data = session['picture']
-        if not session['picture']:
+        if 'picture' not in session:
             image_file = url_for('static', filename = 'profile_pics/' + 'default.jpg')
         else:
             image_file = url_for('static', filename = 'profile_pics/' + session['picture'])
+        
+        form.picture.data = image_file
+
+
         return render_template('user.html', phone = session['user'].get("phone"), email =  session.get('email'), first_name = session['user'].get("firstname"), last_name = session['user'].get("lastname") ,form = form, image_file = image_file, logged_in=session.get('logged_in'), current_time=datetime.utcnow())
     else:
         firstName = None
