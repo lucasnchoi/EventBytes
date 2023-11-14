@@ -85,8 +85,20 @@
                 <br/>
                 <b>Time: </b>{{event.time}}<br/>
                 <b>Location: </b>{{event.place}}<br/><br/>
-                <div class="register-link" style="text-align: center;"><a>Learn More/Register</a></div>
-            </div>
+      
+                <div class="register-link" style="text-align: center;">
+                  <a href="#" onclick="openPopup('{{event.name}}', '{{event.type}}', '{{event.time}}', '{{event.place}}')">Learn More/Register</a>
+                </div>
+      
+                <div class="popup" id="popup-{{event.name}}">
+                  <p><b>{{event.name}}</b><br/>{{event.type}} <br/></p>
+                  <p><b>Time: </b>{{event.time}}</p>
+                  <p><b>Location: </b>{{event.place}}</p>
+                  <button onclick="closePopup('{{event.name}}')">Close</button>
+                  <button onclick="registration('{{event.id}}')">Register</button>
+
+                </div>
+              </div>
             {% endfor %}
                 {% else %}
                     <div class="no-events-text" style='text-align:center'>No events to show.</div>
@@ -94,24 +106,42 @@
 
         </div>
 
+        <script>
+          function openPopup(eventName, eventType, eventTime, eventPlace) {
+            var popupId = 'popup-' + eventName;
+            var popup = document.getElementById(popupId);
+            popup.style.display = 'block';
+          }
+      
+          function closePopup(eventName) {
+            var popupId = 'popup-' + eventName;
+            var popup = document.getElementById(popupId);
+            popup.style.display = 'none';
+          }
+
+          function registration(eventID){
+            console.log(eventID)
+            fetch('/events/registration', {
+              method: 'POST', 
+              headers: {
+              'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({eventID: eventID})
+            })
+          }
+        </script>
+
     </div>
 
     <div class="right-view">
         <h2>My Events:</h2>
         <div class="my-events">
             <br/>
-            <div
-            style="
-                overflow: scroll;
-                height: 200px;
-                text-overflow: clip;
-                white-space: nowrap;
-            "
-            >
+            <div>
             {% if MyEvents %}
             {% for event in MyEvents %}
             <div class="event-preview" style="margin-left: 30px">
-                <b>{{event.name}} @ {{event.place}}</b> (Literature)<br/>
+                <b>{{event.name}} @ {{event.place}}</b> ({{event.type}})<br/>
                 <b>Time:</b> {{event.time}}<br/><br/> 
             </div>
             {% endfor %}
@@ -129,9 +159,9 @@
         <br />
         
           {% if UpcomingEvents %}
-          {% for event in UpcomingEvents[:3] %}
+          {% for event in UpcomingEvents[:5] %}
             <div class="event-preview" style="margin-left: 30px">
-                <b>{{event.name}} @ {{event.place}}</b> (Literature)<br/>
+                <b>{{event.name}} @ {{event.place}}</b> ({{event.type}})<br/>
                 <b>Time:</b> {{event.time}}<br/><br/> 
             </div>
             {% endfor %}
@@ -140,7 +170,6 @@
             {% endif %}
 
       </div>
-      <div class="calendar"><h2>Calendar</h2></div>
     </div>
   </div>
   

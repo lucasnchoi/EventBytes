@@ -61,6 +61,12 @@ class Database:
         result = self.mycursor.fetchall()
         return result 
     
+    def get_event_by_id(self, eventID):
+        command = "SELECT * FROM events WHERE eventID = %s" 
+        self.mycursor.execute(command,(eventID,))
+        result = self.mycursor.fetchall()
+        return result
+    
     def get_all_upcoming_events(self, current_time):
         command = "SELECT * FROM events WHERE time > %s ORDER BY time" 
         self.mycursor.execute(command,(current_time,))
@@ -80,13 +86,19 @@ class Database:
         return result 
     
     #relationship tables:
-    
-    def insert_event_subscriber(self, user_email, name,location,time):
-        userID = self.get_user(user_email)[-1][-1]
-        eventID = self.get_event(name,location,time)[-1][-1]
+
+    def insert_event_subscriber(self, userID, eventID):
 
         command = "INSERT INTO event_subs (userID, eventID) VALUES (%s, %s)"
         self.mycursor.execute(command,(userID,eventID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+    
+    def get_user_subscribed_events(self, userID):
+
+        command = "SELECT * FROM event_subs WHERE userID = %s"
+        self.mycursor.execute(command,(userID,))
         result = self.mycursor.fetchall()
         self.mydb.commit()
         return result
@@ -152,9 +164,7 @@ class Database:
         self.mydb.commit()
         return result
 
-    def get_event_subscriber(self, user_email, name,location,time):
-        userID = self.get_user(user_email)[-1][-1]
-        eventID = self.get_event(name,location,time)[-1][-1]
+    def get_event_subscriber(self, userID, eventID):
 
         command = "SELECT * FROM event_subs WHERE userID = %s AND eventID = %s"
         self.mycursor.execute(command,(userID,eventID))
@@ -301,6 +311,12 @@ class Database:
         for result in results:
             self.mycursor.execute(command,(result[0],))
             tmp = self.mycursor.fetchall()
+            users.append(tmp[0])
+        return users
+    
+    def force_reconnect(self):
+        self.mydb.reconnect()
+
             events.append(tmp[0])
         return events
     
