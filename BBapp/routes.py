@@ -226,7 +226,7 @@ def search(search_query, up):
                 event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
                 search_results_upcoming.append(event.to_dict())
         else:
-            search_results_upcoming = False
+            search_results_upcoming = []
 
         return search_results_upcoming
 
@@ -239,26 +239,64 @@ def search(search_query, up):
                 search_results_userCreated.append(event.to_dict())
         
         else:
-            search_results_userCreated = False
+            search_results_userCreated = []
         
         return search_results_userCreated
 
+def filter_type(search_query, up):
+    type_results_upcoming = []
+    type_results_userCreated = []
+
+    #searched_events_subscribed = db.search_events(search_query, True)
+
+    if(up):
+        searched_events_upcoming = db.filter_event_by_type(search_query, False, datetime.utcnow())
+        if searched_events_upcoming != []:
+            for event_fields in searched_events_upcoming:
+                event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+                type_results_upcoming.append(event.to_dict())
+        else:
+            type_results_upcoming = []
+
+        return type_results_upcoming
+
+    else:
+        userId = session['user'].get("userID")
+        searched_events_userCreated = db.search_UserEvents(search_query, userId)
+        if searched_events_userCreated != []:
+            for event_fields in searched_events_userCreated:
+                event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+                type_results_userCreated.append(event.to_dict())
+        
+        else:
+            type_results_userCreated = []
+        
+        return type_results_userCreated
 
 
 @events_page.route('/events', methods= ['GET', 'POST'])
 def events():
     if (request.method == 'POST'): #POST
-    
+   
         search_query = request.form.get('search_value')
+        event_types = ["Academic", "Arts", "Athletics", "Career", "Culture", "Health", "Social", "Music", "Technology", "Science", "Food", "Environmental", "Volunteer", "Travel", "Gaming", "Fashion", "Fitness", "Business", "Literature", "Film", "Religious", "Other"]
         searched_upcoming_events = []
         searched_my_events = []
         print(search_query)
-        searched_upcoming_events = search(search_query, True)
-        print(searched_upcoming_events, flush=True)
-        searched_my_events = search(search_query, False)
-        print(searched_my_events, flush=True)
-        for event in searched_upcoming_events:
-            print(event)
+        for types in event_types:
+            if search_query == types:
+                searched_upcoming_events = filter_type(search_query, True)
+                searched_my_events = filter_type(search_query, False)
+                break
+            else:
+
+                searched_upcoming_events = search(search_query, True)
+          
+                searched_my_events = search(search_query, False)
+           
+                for event in searched_upcoming_events:
+                    
+                break
 
         return render_template('events.html', MyEvents = searched_my_events, UpcomingEvents = searched_upcoming_events, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
        # elif (type == 'filter'):

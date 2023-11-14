@@ -409,7 +409,7 @@ class Database:
     def filter_event_by_type(self, filter_type, for_sub, current_time):
         
         command = "SELECT * FROM events WHERE type = %s"
-        command_sub = "SELECT * FROM events JOIN event_subs ON events.eventId = event_subs.eventID WHERE type = %s AND time > %s"
+        command_sub = "SELECT * FROM events LEFT JOIN event_subs ON events.eventId = event_subs.eventID WHERE type = %s AND time > %s"
         if for_sub:
             self.mycursor.execute(command_sub, filter_type, current_time)
         else:
