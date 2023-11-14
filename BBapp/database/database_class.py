@@ -80,10 +80,8 @@ class Database:
         return result 
     
     #relationship tables:
-    
-    def insert_event_subscriber(self, user_email, name,location,time):
-        userID = self.get_user(user_email)[-1][-1]
-        eventID = self.get_event(name,location,time)[-1][-1]
+
+    def insert_event_subscriber(self, userID, eventID):
 
         command = "INSERT INTO event_subs (userID, eventID) VALUES (%s, %s)"
         self.mycursor.execute(command,(userID,eventID))
@@ -152,9 +150,7 @@ class Database:
         self.mydb.commit()
         return result
 
-    def get_event_subscriber(self, user_email, name,location,time):
-        userID = self.get_user(user_email)[-1][-1]
-        eventID = self.get_event(name,location,time)[-1][-1]
+    def get_event_subscriber(self, userID, eventID):
 
         command = "SELECT * FROM event_subs WHERE userID = %s AND eventID = %s"
         self.mycursor.execute(command,(userID,eventID))
