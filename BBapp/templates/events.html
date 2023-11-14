@@ -8,11 +8,66 @@
   {% if logged_in %}
   <h1><b>Events Dashboard</b></h1>
 
-  <div class="events-search-container">
-    <input class="searchbar" type="text" placeholder="Search for an Event" />
-    <button class="button" style="margin-left: 5px">Search</button>
-  </div>
+  <form method = "post" action="/events">
+    <input type="text" name="search_value" >
+    <input type="submit" value="Search">
+  </form>
 
+  <div class="type-filter-container">
+    <form method="POST" action="/events">
+        <div style="margin-top: 5px;">
+            Event Type:
+            <select name="search_value" id="event-type">
+                <option value="Academic">Academic</option>
+                <option value="Arts">Arts</option>
+                <option value="Athletics">Athletics</option>
+                <option value="Career">Career</option>
+                <option value="Cultural">Cultural</option>
+                <option value="Health">Health</option>
+                <option value="Social">Social</option>
+                <option value="Music">Music</option>
+                <option value="Technology">Technology</option>
+                <option value="Science">Science</option>
+                <option value="Food">Food</option>
+                <option value="Environmental">Environmental</option>
+                <option value="Volunteer">Volunteer</option>
+                <option value="Travel">Travel</option>
+                <option value="Gaming">Gaming</option>
+                <option value="Fashion">Fashion</option>
+                <option value="Fitness">Fitness</option>
+                <option value="Business">Business</option>
+                <option value="Literature">Literature</option>
+                <option value="Film">Film</option>
+                <option value="Religious">Religious</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <button type="submit">Search Type</button>
+    </form>
+</div>
+
+<div class="events-filter-container">
+  <form method="GET" action="/events">
+      <button type="submit" class="btn btn-primary" style="margin-left: 5px">Reset Filter</button>
+  </form>
+</div>
+
+<!--
+<form method = "post" action="/filter">
+  <label>
+    Start Date:
+    <input type="date" name="start_date" />
+  </label>
+  
+  <label>
+    End Date:
+    <input type="date" name="end_date" />
+  </label>
+
+  <p><button type="submit">Filter</button></p>
+</form>
+-->
+<!--
   <div class="events-filter-container">
     Start Date:
     <input class="date-selector" type="date" class="start-date">
@@ -49,6 +104,7 @@
 
   </div>
 
+-->
   <div class="events-body">
 
     <div class="left-view"> 
@@ -180,4 +236,18 @@
   
   {% endif %}
 </div>
+
+<script>
+  function searchEvent() {
+  fetch('/events', {
+    method: 'POST', 
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({type: 'search', search_query: document.getElementById("searchbar").value })
+  })
+}
+
+</script>
+
 {% endblock %}

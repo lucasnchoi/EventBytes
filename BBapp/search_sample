@@ -1,0 +1,54 @@
+from flask import Flask
+from datetime import datetime
+from flask.testing import FlaskClient
+from database import Database
+from event import Event
+
+
+
+db = Database()
+
+
+db.insert_organization("ABC Corp", "exploreABC@gmail.com", "we help with LIFE exploration", "networking", "1234")
+db.insert_organization("DEF Corp", "exploreDEF@gmail.com", "we help", "networking", "1224")
+db.insert_organization("TEP Corp", "exploreTEP@gmail.com", "we also help", "guidance", "1534")
+db.insert_event('my event 1', 'Other','location a', "2023-12-03T08:30", 'details 1', 'booking 1', 'accommodation 1', 'requisite 1',10, 'contact 1', 2, 1)
+db.insert_event("career fair", "networking", "ex200", "2024-01-03T09:30", "please come", "none", "none", "none", 100, "johnsmith@gmail.com", 1, 2)
+db.insert_event("my event 2", "Other", "location a", "2023-12-05T08:30", "please come", "none", "none", "none", 100, "johnCollins@gmail.com", 3, 3)
+db.insert_event("cultural fair", "networking", "ex200", "2023-11-26T09:30", "please come", "none", "none", "none", 100, "johnhenson@gmail.com", 1, 2)
+db.insert_event("past event", "Other", "location a", "2023-11-04T09:30", "please come", "none", "none", "none", 100, "johnAllen@gmail.com", 3, 3)
+
+
+
+event_search_result = []
+
+
+#searched_events_userCreated = db.search_UserEvents(name, uid)
+"""for event_fields in searched_events_userCreated:
+    event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+    event_search_result.append(event.to_dict())
+        """
+
+            #if time given, it is a query for upcoming events
+searched_events_upcoming = db.search_events("career fair", False, datetime.utcnow())
+for event_fields in searched_events_upcoming:
+    print("hi")
+    print(event_fields[0])
+
+for event_fields in searched_events_upcoming:
+    event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+    event_search_result.append(event)
+        
+for events in event_search_result:
+    print("HERE")
+    events.print_all_attributes()
+
+
+filtered_events_type = db.filter_event_by_type("Other", False, datetime.utcnow())
+for event_fields in filtered_events_type:
+    event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+    event_search_result.append(event)
+
+for events in event_search_result:
+    print("HERE")
+    events.print_all_attributes()

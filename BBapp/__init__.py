@@ -19,3 +19,5 @@ app.register_blueprint(registration_page)
 app.register_blueprint(force_reload_page)
 
 
+app.register_blueprint(search_page) 
+app.register_blueprint(filter_dates)
