@@ -304,3 +304,12 @@ def receiver():
 
     data = jsonify(data)
     return data
+
+force_reload_page = Blueprint('forceReload', __name__, template_folder='templates')
+@force_reload_page.route('/forceReload', methods=['GET'])
+def forceReload():
+    try:
+        db.force_reconnect()
+        return jsonify(success=True)
+    except Exception as e:
+        return jsonify(success=False, error=str(e))
