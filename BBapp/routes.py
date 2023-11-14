@@ -261,11 +261,12 @@ def user():
             form.phone.data  = session['user'].get("phone")
             form.email.data =session.get('email')
             form.password.data = session.get('password')
-        if 'picture' not in session:
-            image_file = url_for('static', filename = 'profile_pics/' + 'default.jpg')
+
+        if session and session['picture']:
+            image_file = url_for('static', filename='profile_pics/' + session['picture'])
         else:
-            image_file = url_for('static', filename = 'profile_pics/' + session['picture'])
-        
+            image_file = url_for('static', filename='profile_pics/default.jpg')
+
         form.picture.data = image_file
 
 
@@ -304,3 +305,12 @@ def receiver():
 
     data = jsonify(data)
     return data
+
+force_reload_page = Blueprint('forceReload', __name__, template_folder='templates')
+@force_reload_page.route('/forceReload', methods=['GET'])
+def forceReload():
+    try:
+        db.force_reconnect()
+        return jsonify(success=True)
+    except Exception as e:
+        return jsonify(success=False, error=str(e))
