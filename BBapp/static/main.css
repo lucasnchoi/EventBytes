@@ -121,23 +121,8 @@ body {
   left: -25px;
   padding: 2px;
   position: relative;
-
-
-/* End */
-
-/* Sidenav */
-.sidenav {
-  background-color: #fff;
-  color: #333;
-  border-bottom-right-radius: 25px;
-  height: 86%;
-  left: 0;
-  overflow-x: hidden;
-  padding-top: 20px;
-  position: absolute;
-  top: 70px;
-  width: 250px;
 }
+/* End */
 
 .profile {
   margin-bottom: 20px;
