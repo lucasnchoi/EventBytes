@@ -61,6 +61,12 @@ class Database:
         result = self.mycursor.fetchall()
         return result 
     
+    def get_event_by_id(self, eventID):
+        command = "SELECT * FROM events WHERE eventID = %s" 
+        self.mycursor.execute(command,(eventID,))
+        result = self.mycursor.fetchall()
+        return result
+    
     def get_all_upcoming_events(self, current_time):
         command = "SELECT * FROM events WHERE time > %s ORDER BY time" 
         self.mycursor.execute(command,(current_time,))
@@ -85,6 +91,14 @@ class Database:
 
         command = "INSERT INTO event_subs (userID, eventID) VALUES (%s, %s)"
         self.mycursor.execute(command,(userID,eventID))
+        result = self.mycursor.fetchall()
+        self.mydb.commit()
+        return result
+    
+    def get_user_subscribed_events(self, userID):
+
+        command = "SELECT * FROM event_subs WHERE userID = %s"
+        self.mycursor.execute(command,(userID,))
         result = self.mycursor.fetchall()
         self.mydb.commit()
         return result
