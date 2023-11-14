@@ -193,7 +193,6 @@ def events():
 
     my_events_list = []
     upcoming_events_list = []
-    event
     if session.get('logged_in') == True:
         fetchedUserCreatedEvents = db.get_user_created_events(session['user'].get("userID"), datetime.utcnow())
         if fetchedUserCreatedEvents != []:
