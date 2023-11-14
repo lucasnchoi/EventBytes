@@ -5,6 +5,14 @@ body {
   font-family: "Gill Sans", sans-serif;
   font-size: 20px;
 }
+
+.account-img {
+  height: 125px;
+  width: 125px;
+  margin-right: 20px;
+  margin-bottom: 16px;
+}
+
 .title-container {
   margin-top: 60px;
   display: flex;
@@ -105,40 +113,6 @@ body {
   font-size: 25px;
 }
 
-/* NavbarTop */
-/* .navbar-top {
-  background-color: #fff;
-  color: #333;
-  box-shadow: 0px 4px 8px 0px grey;
-  height: 70px;
-}
-
-.title {
-  font-family: "Dancing Script", cursive;
-  padding-top: 15px;
-  position: absolute;
-  left: 45%;
-}
-
-.navbar-top ul {
-  float: right;
-  list-style-type: none;
-  margin: 0;
-  overflow: hidden;
-  padding: 18px 50px 0 40px;
-}
-
-.navbar-top ul li {
-  float: left;
-}
-
-.navbar-top ul li a {
-  color: #333;
-  padding: 14px 16px;
-  text-align: center;
-  text-decoration: none;
-}
-
 .icon-count {
   background-color: #ff0000;
   color: #fff;
@@ -147,7 +121,7 @@ body {
   left: -25px;
   padding: 2px;
   position: relative;
-} */
+
 
 /* End */
 
