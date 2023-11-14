@@ -334,3 +334,7 @@ def forceReload():
         return jsonify(success=True)
     except Exception as e:
         return jsonify(success=False, error=str(e))
+    
+@app.errorhandler(404)
+def page_not_found(error):
+    return redirect(url_for('home_page.home'))
