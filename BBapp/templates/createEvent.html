@@ -1,5 +1,7 @@
 {% extends "base.html" %} {% import "bootstrap/wtf.html" as wtf %} {% block
 title %}Login{% endblock %} {% block page_content %}
+
+<img src="{{ url_for('static', filename='assets/uoft-logo.png') }}" alt="UofT Logo" class="logo"/>
 <h1 class="create-event-header"><b>Create Event</b></h1>
 {%for err in errors%}
 <div class="alert alert-warning">

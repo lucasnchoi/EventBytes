@@ -68,7 +68,7 @@
 .discover-events-container {
   background-color: #ffffff;
   border: 1px solid black;
-  border-radius: 2%;
+  border-radius: 15px;
   margin-right: 50px;
   display: flex;
   flex-wrap: wrap;
@@ -92,7 +92,7 @@
   border: 1px solid black;
   border-radius: 3%;
   width: 150%;
-  height: 35%;
+  height: 400px;
   overflow: scroll;
 }
 
@@ -101,6 +101,6 @@
   border: 1px solid black;
   border-radius: 3%;
   width: 150%;
-  height: 35%;
+  height: 300px;
   overflow: scroll;
 }

@@ -1,3 +1,6 @@
+
+import os
+import secrets
 from flask import Flask, render_template, session, redirect, url_for, flash, Blueprint, request, jsonify
 from datetime import datetime
 import time
@@ -5,7 +8,10 @@ from BBapp.forms import *
 from BBapp.database import Database
 from BBapp.user import User
 from BBapp.event import Event
+from BBapp import app
+from PIL import Image
 
+UPLOAD_FOLDER = './BBapp/static/profile_pics'
 
 db = Database()
 
@@ -95,6 +101,7 @@ def signup():
         signupUser['lastName'] = form.lastName.data
         signupUser['phone'] = form.phone.data
         signupUser['password'] = form.password.data
+        session['picture'] = None
 
         if form.clubRepresentative.data == 'No':
             signupUser['clubRepresentative'] = False
@@ -204,12 +211,27 @@ def events():
             upcoming_events_list = False
     return render_template('events.html', MyEvents = my_events_list, UpcomingEvents = upcoming_events_list, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
 
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path + 'static/profile_pics', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
+
 user_page = Blueprint('user_page', __name__, template_folder='templates')
 @user_page.route('/user', methods = ['GET', 'POST'])
 def user():
     form = UpdateAccountForm()
     if session.get('logged_in') == True:
-        image_file = url_for('static', filename = 'uoft-logo')
+        
         if form.validate_on_submit():
             updateUser = {}
             updateUser["firstname"] = form.firstname.data
@@ -223,6 +245,14 @@ def user():
             session['user'] = User(updateUser['firstname'], updateUser['lastname'], updateUser['email'], updateUser['phone'], session['user'].get("userID"), session['user'].get('orgID'), session['user'].get('orgRole')).dictionary()
             session['password'] = updateUser["password"]
             session['email'] = updateUser["email"]
+            if form.picture.data:
+                file1 = form.picture.data.read()
+                path = os.path.join(UPLOAD_FOLDER, form.picture.data.filename)
+                with open(path, 'wb') as file2:
+                    file2.write(file1)
+
+                session['picture'] = form.picture.data.filename
+                print(session['picture'])
             flash('updated successfully', 'success')
             print(session['user'])
             print(updateUser)
@@ -234,7 +264,11 @@ def user():
             form.phone.data  = session['user'].get("phone")
             form.email.data =session.get('email')
             form.password.data = session.get('password')
-
+            form.picture.data = session['picture']
+        if not session['picture']:
+            image_file = url_for('static', filename = 'profile_pics/' + 'default.jpg')
+        else:
+            image_file = url_for('static', filename = 'profile_pics/' + session['picture'])
         return render_template('user.html', phone = session['user'].get("phone"), email =  session.get('email'), first_name = session['user'].get("firstname"), last_name = session['user'].get("lastname") ,form = form, image_file = image_file, logged_in=session.get('logged_in'), current_time=datetime.utcnow())
     else:
         firstName = None
