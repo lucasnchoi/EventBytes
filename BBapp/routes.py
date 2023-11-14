@@ -254,14 +254,13 @@ def user():
     form = UpdateAccountForm()
     if session.get('logged_in') == True:
         
-        if form.validate_on_submit():
+        if request.method == "POST":
             updateUser = {}
             updateUser["firstname"] = form.firstname.data
             updateUser["lastname"] = form.lastname.data
             updateUser["email"] = form.email.data
             updateUser["password"] = form.password.data
             updateUser["phone"] = form.phone.data
-            print(updateUser)
             db.delete_user(updateUser['email'])
             db.insert_user(updateUser['firstname'],updateUser['lastname'],updateUser['email'],updateUser['phone'],updateUser['password'],session['user'].get('OrgId'), session['user'].get('OrgRole'))
             session['user'] = User(updateUser['firstname'], updateUser['lastname'], updateUser['email'], updateUser['phone'], session['user'].get("userID"), session['user'].get('orgID'), session['user'].get('orgRole')).dictionary()
@@ -276,8 +275,6 @@ def user():
                 session['picture'] = form.picture.data.filename
                 print(session['picture'])
             flash('updated successfully', 'success')
-            print(session['user'])
-            print(updateUser)
             return redirect(url_for('user_page.user'))
         elif request.method == "GET":
 
@@ -286,11 +283,15 @@ def user():
             form.phone.data  = session['user'].get("phone")
             form.email.data =session.get('email')
             form.password.data = session.get('password')
-            form.picture.data = session['picture']
-        if not session['picture']:
-            image_file = url_for('static', filename = 'profile_pics/' + 'default.jpg')
+
+        if session and session['picture']:
+            image_file = url_for('static', filename='profile_pics/' + session['picture'])
         else:
-            image_file = url_for('static', filename = 'profile_pics/' + session['picture'])
+            image_file = url_for('static', filename='profile_pics/default.jpg')
+
+        form.picture.data = image_file
+
+
         return render_template('user.html', phone = session['user'].get("phone"), email =  session.get('email'), first_name = session['user'].get("firstname"), last_name = session['user'].get("lastname") ,form = form, image_file = image_file, logged_in=session.get('logged_in'), current_time=datetime.utcnow())
     else:
         firstName = None
@@ -311,7 +312,13 @@ def calendar():
 
 @calendar_page.route("/receiver", methods=['GET', 'POST'])
 def receiver():
+    #Include user's registered events as well as user's created events
     all_events = db.get_user_events(session.get("email"))
+    userID = (db.get_user(session.get("email")))[-1][-1]
+    all_user_events = db.get_user_created_events(userID, datetime.utcnow())
+    for events in all_user_events:
+        if events not in all_events:
+            all_events.append(events)
     data = []
     for event in all_events:
         event_datetime = datetime.strptime(event[3], '%Y-%m-%d %H:%M:%S')
@@ -320,3 +327,12 @@ def receiver():
 
     data = jsonify(data)
     return data
+
+force_reload_page = Blueprint('forceReload', __name__, template_folder='templates')
+@force_reload_page.route('/forceReload', methods=['GET'])
+def forceReload():
+    try:
+        db.force_reconnect()
+        return jsonify(success=True)
+    except Exception as e:
+        return jsonify(success=False, error=str(e))

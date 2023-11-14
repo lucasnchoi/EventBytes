@@ -313,3 +313,6 @@ class Database:
             tmp = self.mycursor.fetchall()
             users.append(tmp[0])
         return users
+    
+    def force_reconnect(self):
+        self.mydb.reconnect()
