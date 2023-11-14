@@ -88,7 +88,7 @@
                   <p><b>Time: </b>{{event.time}}</p>
                   <p><b>Location: </b>{{event.place}}</p>
                   <button onclick="closePopup('{{event.name}}')">Close</button>
-                  <button onclick="">Register</button>
+                  <button onclick="registration('{{event.id}}')">Register</button>
 
                 </div>
               </div>
@@ -110,6 +110,17 @@
             var popup = document.getElementById(popupId);
             popup.style.display = 'none';
           }
+
+          function registration(eventID){
+            console.log(eventID)
+            fetch('/events/registration', {
+              method: 'POST', 
+              headers: {
+              'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({eventID: eventID})
+            })
+          }
         </script>
 
     </div>
@@ -118,18 +129,11 @@
         <h2>My Events:</h2>
         <div class="my-events">
             <br/>
-            <div
-            style="
-                overflow: scroll;
-                height: 200px;
-                text-overflow: clip;
-                white-space: nowrap;
-            "
-            >
+            <div>
             {% if MyEvents %}
             {% for event in MyEvents %}
             <div class="event-preview" style="margin-left: 30px">
-                <b>{{event.name}} @ {{event.place}}</b> (Literature)<br/>
+                <b>{{event.name}} @ {{event.place}}</b> ({{event.type}})<br/>
                 <b>Time:</b> {{event.time}}<br/><br/> 
             </div>
             {% endfor %}
@@ -147,9 +151,9 @@
         <br />
         
           {% if UpcomingEvents %}
-          {% for event in UpcomingEvents[:3] %}
+          {% for event in UpcomingEvents[:5] %}
             <div class="event-preview" style="margin-left: 30px">
-                <b>{{event.name}} @ {{event.place}}</b> (Literature)<br/>
+                <b>{{event.name}} @ {{event.place}}</b> ({{event.type}})<br/>
                 <b>Time:</b> {{event.time}}<br/><br/> 
             </div>
             {% endfor %}
@@ -158,7 +162,6 @@
             {% endif %}
 
       </div>
-      <div class="calendar"><h2>Calendar</h2></div>
     </div>
   </div>
 

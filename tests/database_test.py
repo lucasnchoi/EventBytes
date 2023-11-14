@@ -88,16 +88,16 @@ class TestEventClass(unittest.TestCase):
         timeNow = str(datetime.now())
         results = self.database.insert_event('my event 1', 'Other','location a', str(timeNow), 'details 1', 'booking 1', 'accommodation 1', 'requisite 1',10, 'contact 1',1,1)
 
-        #insertion:
-        results = self.database.insert_event_subscriber("a@mail.utoronto.ca", "my event 1", "location a",str(timeNow))
-        self.database.mycursor.execute('SELECT last_insert_id() from event_subs')
-        ESID = list(self.database.mycursor)[0][0]
-
         #get:
         userID = self.database.get_user("a@mail.utoronto.ca")[-1][-1]
         eventID = self.database.get_event("my event 1", "location a", str(timeNow))[-1][-1]
+        
+        #insertion:
+        results = self.database.insert_event_subscriber(userID, eventID)
+        self.database.mycursor.execute('SELECT last_insert_id() from event_subs')
+        ESID = list(self.database.mycursor)[0][0]
 
-        results = self.database.get_event_subscriber("a@mail.utoronto.ca","my event 1", "location a", str(timeNow))
+        results = self.database.get_event_subscriber(userID, eventID)
         self.assertEqual(results[-1],(userID,eventID,ESID))
 
         results = self.database.get_user_events("a@mail.utoronto.ca")
