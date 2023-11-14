@@ -283,12 +283,7 @@ def user():
             form.phone.data  = session['user'].get("phone")
             form.email.data =session.get('email')
             form.password.data = session.get('password')
-
-        if session and session['picture']:
-            image_file = url_for('static', filename='profile_pics/' + session['picture'])
-        else:
-            image_file = url_for('static', filename='profile_pics/default.jpg')
-
+        image_file = url_for('static', filename='profile_pics/' + session['picture']) if session and 'picture' in session and session['picture'] is not None else url_for('static', filename='profile_pics/default.jpg')
         form.picture.data = image_file
 
 
