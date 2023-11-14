@@ -7,10 +7,10 @@
   {% if logged_in %}
   <h1><b>Events Dashboard</b></h1>
 
-  <div class="events-search-container">
+  <form class="events-search-container">
     <input class="searchbar" type="text" placeholder="Search for an Event" id = "searchbar" />
     <button class="button" style="margin-left: 5px" onclick="searchEvent()">Search</button>
-  </div>
+  </form>
 
   <div class="events-filter-container">
     Start Date:
@@ -130,12 +130,12 @@
 </div>
 <script>
     function searchEvent() {
-    fetch('/search', {
+    fetch('/events', {
       method: 'POST', 
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({search_query: document.getElementById("searchbar").value })
+      body: JSON.stringify({type: 'search', search_query: document.getElementById("searchbar").value })
     })
   }
 

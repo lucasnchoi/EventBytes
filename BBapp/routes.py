@@ -183,6 +183,7 @@ def login():
 user_page = Blueprint('user_page', __name__, template_folder='templates')
 @user_page.route('/user')
 def user():
+
     if session.get('logged_in') == True:
         firstName = session['user'].get("firstname")
         lastName = session['user'].get("lastname")
@@ -232,7 +233,7 @@ def search(search_query):
 
 
 
-@events_page.route('/events', methods= ['GET', ''])
+@events_page.route('/events', methods= ['GET', 'POST'])
 def events():
     if (request.method == 'GET'):
         my_events_list = []
@@ -255,6 +256,18 @@ def events():
             else:
                 upcoming_events_list = False
         return render_template('events.html', MyEvents = my_events_list, UpcomingEvents = upcoming_events_list, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+    else: #POST
+        type = request.get_json().get('type')
+        if(type == 'search'):
+            search_query = request.get_json().get('search_query')
+            search_results_upcoming, search_results_userCreated = search(search_query)
+            print(search_results_upcoming, flush=True)
+            print(search_results_userCreated)
+            return render_template('events.html', MyEvents = search_results_userCreated, UpcomingEvents = search_results_upcoming, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+        elif (type == 'filter'):
+            print("filtering")
+
+
 
 
 @search_page.route('/search', methods= [ 'POST'])
