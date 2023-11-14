@@ -228,7 +228,7 @@
     events.forEach(function(ev) {
       var div = createElement('div', 'event');
       var square = createElement('div', 'event-category ' + ev.color);
-      var time = createElement(span, '', ev.date.format(' hh:mm A'));
+      var time = createElement(span, '', " " + new Date(ev.date).toLocaleTimeString('en-US', {timeZone: 'America/New_York'}));
       var span = createElement('span', '', ev.eventName + ":");
       var location = createElement('span', '', " at " + ev.Location);
 
@@ -284,7 +284,7 @@
     success: function (response) {
       calendarData = response;
       calendarData.forEach(function(event_data) {
-        event_data.date = (new Date(event_data.date).toLocaleString());
+        event_data.date = (new Date(event_data.date));
         });
       var drawCalendar = new Calendar('#calendar', calendarData);
     },
