@@ -284,7 +284,8 @@
     success: function (response) {
       calendarData = response;
       calendarData.forEach(function(event_data) {
-        event_data.date = new Date(event_data.date);
+        event_data.date = (new Date(event_data.date).toLocaleString());
+        console.log(event_data.date);
         });
       var drawCalendar = new Calendar('#calendar', calendarData);
     },
