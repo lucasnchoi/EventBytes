@@ -289,7 +289,13 @@ def calendar():
 
 @calendar_page.route("/receiver", methods=['GET', 'POST'])
 def receiver():
+    #Include user's registered events as well as user's created events
     all_events = db.get_user_events(session.get("email"))
+    userID = (db.get_user(session.get("email")))[-1][-1]
+    all_user_events = db.get_user_created_events(userID, datetime.utcnow())
+    for events in all_user_events:
+        if events not in all_events:
+            all_events.append(events)
     data = []
     for event in all_events:
         event_datetime = datetime.strptime(event[3], '%Y-%m-%d %H:%M:%S')
