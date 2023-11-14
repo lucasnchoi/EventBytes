@@ -3,6 +3,7 @@
 {% block title %}Dashboard{% endblock %} {% block page_content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='events.css') }}" />
 
+<img src="{{ url_for('static', filename='assets/uoft-logo.png') }}" alt="UofT Logo" class="logo"/>
 <div class="events-container">
   {% if logged_in %}
   <h1><b>Events Dashboard</b></h1>
@@ -52,23 +53,64 @@
 
     <div class="left-view"> 
         <h2>Discover Events</h2>
+        <title>Event Popup Example</title>
+        <style>
+          .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+          }
+        </style>
 
         <div class="discover-events-container">
-            {% if UpcomingEvents %}
+          {% if UpcomingEvents %}
             {% for event in UpcomingEvents %}
-            <div class="event-card">
+              <div class="event-card">
                 <div class="event-title" style="text-align: center;"><b>{{event.name}}</b><br/>{{event.type}} <br/></div>
                 <br/>
                 <b>Time: </b>{{event.time}}<br/>
                 <b>Location: </b>{{event.place}}<br/><br/>
-                <div class="register-link" style="text-align: center;"><a>Learn More/Register</a></div>
-            </div>
-            {% endfor %}
-                {% else %}
-                    <div class="no-events-text" style='text-align:center'>No events to show.</div>
-            {%endif%}
+      
+                <div class="register-link" style="text-align: center;">
+                  <a href="#" onclick="openPopup('{{event.name}}', '{{event.type}}', '{{event.time}}', '{{event.place}}')">Learn More/Register</a>
+                </div>
+      
+                <div class="popup" id="popup-{{event.name}}">
+                  <p><b>{{event.name}}</b><br/>{{event.type}} <br/></p>
+                  <p><b>Time: </b>{{event.time}}</p>
+                  <p><b>Location: </b>{{event.place}}</p>
+                  <button onclick="closePopup('{{event.name}}')">Close</button>
+                  <button onclick="">Register</button>
 
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="no-events-text" style='text-align:center'>No events to show.</div>
+          {% endif %}
         </div>
+
+        <script>
+          function openPopup(eventName, eventType, eventTime, eventPlace) {
+            var popupId = 'popup-' + eventName;
+            var popup = document.getElementById(popupId);
+            popup.style.display = 'block';
+          }
+      
+          function closePopup(eventName) {
+            var popupId = 'popup-' + eventName;
+            var popup = document.getElementById(popupId);
+            popup.style.display = 'none';
+          }
+        </script>
 
     </div>
 

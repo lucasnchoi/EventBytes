@@ -90,11 +90,10 @@ def test_user(client):
     """Test user page"""
     db.delete_user('userTest@mail.utoronto.ca') 
     rv = client.get('/user')
-    print(str(rv.data))
     assert rv.status_code == 302
     rv = signup(client, 'userTest@mail.utoronto.ca', 'test', 'lastName','1234567890', 'password', 'password', 'No', '', '')
     rv = client.get('/user')
-    assert rv.status_code == 302
+    assert rv.status_code == 200
     db.delete_user('userTest@mail.utoronto.ca') 
 
 def createEvent(client, name, type, time, size, location, details, booking, accommodation, requisite, contact, organizationHosted): 
