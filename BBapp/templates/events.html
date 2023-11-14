@@ -123,6 +123,7 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             z-index: 1;
+            width: 500px;
           }
         </style>
 
@@ -140,11 +141,17 @@
                 </div>
       
                 <div class="popup" id="popup-{{event.name}}">
-                  <p><b>{{event.name}}</b><br/>{{event.type}} <br/></p>
+                  <p><b>{{event.name}} </b>({{event.type}})<br/></p>
                   <p><b>Time: </b>{{event.time}}</p>
-                  <p><b>Location: </b>{{event.place}}</p>
-                  <button onclick="closePopup('{{event.name}}')">Close</button>
-                  <button onclick="registration('{{event.id}}')">Register</button>
+                  <p><b>Location: </b>{{event.place}}</p><br/>
+                  <p><b>Description: </b><br/> {{event.details}} <br/></p>
+                  <p><b>How to Book: <br/></b> {{event.booking}} <br/></p>
+                  <p><b>Accomodation: </b><br/> {{event.accomodation}} <br/></p>
+                  <p><b>Requisites: </b><br/> {{event.requisite}}</p> <br/>
+                  <div style="display:flex; justify-content: space-between">
+                    <button onclick="closePopup('{{event.name}}')">Close</button>
+                    <button onclick="registration('{{event.id}}')">Register</button>
+                  </div>
 
                 </div>
               </div>
