@@ -1,7 +1,11 @@
 {% extends "base.html" %} {% import "bootstrap/wtf.html" as wtf %} {% block
 title %}Login{% endblock %} {% block page_content %}
 
-<img src="{{ url_for('static', filename='assets/uoft-logo.png') }}" alt="UofT Logo" class="logo"/>
+<img
+  src="{{ url_for('static', filename='assets/uoft-logo.png') }}"
+  alt="UofT Logo"
+  class="logo"
+/>
 <h1 class="create-event-header"><b>Create Event</b></h1>
 {%for err in errors%}
 <div class="alert alert-warning">
@@ -14,7 +18,7 @@ title %}Login{% endblock %} {% block page_content %}
   Event created successfully!
 </div>
 {% endif %}
-<form method="post" action="/create_event">
+<form method="post" action="/create_event" style="width: 60%">
   <!--I'm not using quickform because it does not allow custom styling of buttons, 
         using quickform stops the external button to stop working-->
   {{ wtf.form_field(form.name)}} {{ wtf.form_field(form.type)}} {{
