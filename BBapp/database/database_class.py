@@ -309,7 +309,7 @@ class Database:
         command = """
         SELECT e.*
         FROM events e
-        JOIN organizations o ON e.organizationId = o.orgID
+        LEFT JOIN organizations o ON e.organizationId = o.orgID
         WHERE (e.name LIKE %s OR o.name LIKE %s OR e.location LIKE %s) AND e.time > %s 
         ORDER BY time
         """
@@ -317,7 +317,7 @@ class Database:
         command_sub = """
         SELECT e.*
         FROM events e
-        JOIN organizations o ON e.organizationId = o.orgID JOIN event_subs s ON e.eventId = s.eventID
+        LEFT JOIN organizations o ON e.organizationId = o.orgID JOIN event_subs s ON e.eventId = s.eventID
         WHERE (e.name LIKE %s OR o.name LIKE %s OR e.location LIKE %s) AND e.time > %s 
         ORDER BY time
         """
@@ -337,7 +337,7 @@ class Database:
         command = """
         SELECT * 
         FROM events e
-        JOIN organizations o ON e.organizationId = o.orgID
+        LEFT JOIN organizations o ON e.organizationId = o.orgID
         WHERE (e.name LIKE %s OR o.name LIKE %s OR e.location LIKE %s) AND e.creatorId = %s
         ORDER BY time
         """

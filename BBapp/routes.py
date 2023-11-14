@@ -212,32 +212,36 @@ filter_dates = Blueprint('filter_date', __name__, template_folder='templates')
 
 
 
-def search(search_query):
+def search(search_query, up):
     search_results_upcoming = []
     #search_results_subscribed = []
     search_results_userCreated = []
 
-    searched_events_upcoming = db.search_events(search_query, False, datetime.utcnow())
     #searched_events_subscribed = db.search_events(search_query, True)
-    userId = session['user'].get("userID")
-    searched_events_userCreated = db.search_UserEvents(search_query, userId)
 
-    if searched_events_upcoming != []:
-        for event_fields in searched_events_upcoming:
-            event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
-            search_results_upcoming.append(event.to_dict())
-    else:
-        search_results_upcoming = False
+    if(up):
+        searched_events_upcoming = db.search_events(search_query, False, datetime.utcnow())
+        if searched_events_upcoming != []:
+            for event_fields in searched_events_upcoming:
+                event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+                search_results_upcoming.append(event.to_dict())
+        else:
+            search_results_upcoming = False
 
-    if searched_events_userCreated != []:
-        for event_fields in searched_events_userCreated:
-            event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
-            search_results_userCreated.append(event.to_dict())
-    
+        return search_results_upcoming
+
     else:
-        search_results_userCreated = False
-    
-    return searched_events_upcoming, searched_events_userCreated
+        userId = session['user'].get("userID")
+        searched_events_userCreated = db.search_UserEvents(search_query, userId)
+        if searched_events_userCreated != []:
+            for event_fields in searched_events_userCreated:
+                event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+                search_results_userCreated.append(event.to_dict())
+        
+        else:
+            search_results_userCreated = False
+        
+        return search_results_userCreated
 
 
 
@@ -264,46 +268,43 @@ def events():
             else:
                 upcoming_events_list = False
         return render_template('events.html', MyEvents = my_events_list, UpcomingEvents = upcoming_events_list, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+
+
     else: #POST
-        type = request.get_json().get('type')
-        if(type == 'search'):
-            search_query = request.get_json().get('search_query')
-            search_results_upcoming, search_results_userCreated = search(search_query)
-            print(search_results_upcoming, flush=True)
-            print(search_results_userCreated)
-            return render_template('events.html', MyEvents = search_results_userCreated, UpcomingEvents = search_results_upcoming, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
-        elif (type == 'filter'):
-            print("filtering")
+    
+        search_query = request.form.get('search_value')
+        searched_upcoming_events = []
+        searched_my_events = []
+        print(search_query)
+        searched_upcoming_events = search(search_query, True)
+        print(searched_upcoming_events, flush=True)
+        searched_my_events = search(search_query, False)
+        print(searched_my_events, flush=True)
+        for event in searched_upcoming_events:
+            print(event)
+
+        return render_template('events.html', MyEvents = searched_my_events, UpcomingEvents = searched_upcoming_events, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
+       # elif (type == 'filter'):
+         #   print("filtering")
 
 
 
 
-@search_page.route('/search', methods= [ 'POST'])
-def search_events():
-    search_query = request.args.get('search_query')
-    search_results_upcoming,search_results_userCreated =  search(search_query)
-    return render_template('events.html', UpcomingEvents = search_results_upcoming, MyEvents = search_results_userCreated, current_time=datetime.utcnow())
-
-
-def filter_date():
-
-    date_filtered_upcomingEvents = []
-    date_filtered_myEvents = []
-    start_date = request.args.get('start-date')
-    end_date = request.args.get('end-date')
-
+@search_page.route('/filter', methods= [ 'POST'])
+def filter():
+    start_date = request.form.get('start_date')
+    end_date = request.form.get('end_date')
     if start_date is not None:
 
         if end_date is None:
             end_date = start_date
-
-        events_byDate = db.filter_events_byDate(start_date, end_date, False, datetime.utcnow())
-        if events_byDate != []:
-            for event_fields in events_byDate:
-                event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
-                date_filtered_upcomingEvents.append(event.to_dict())
-        else:
-            date_filtered_upcomingEvents = False
+            events_byDate = db.filter_events_byDate(start_date, end_date, False, datetime.utcnow())
+            if events_byDate != []:
+                for event_fields in events_byDate:
+                    event = Event(event_fields[0], event_fields[1], event_fields[2], event_fields[3], event_fields[4], event_fields[5], event_fields[6], event_fields[7], event_fields[8], event_fields[9], event_fields[10], event_fields[11], event_fields[12])
+                    date_filtered_upcomingEvents.append(event.to_dict())
+            else:
+                date_filtered_upcomingEvents = False
 
         userId = session['user'].get("userID")
         myEvents_byDate = db.filter_UserEvents_byDate(start_date, end_date, userId)
@@ -315,8 +316,10 @@ def filter_date():
             date_filtered_myEvents = False
 
 
-    return render_template('events.html', UpcomingEvents = date_filtered_upcomingEvents, MyEvents = date_filtered_myEvents, current_time=datetime.utcnow())
+    return render_template('events.html', MyEvents = date_filtered_myEvents, UpcomingEvents = date_filtered_upcomingEvents, logged_in=session.get('logged_in'), email=session.get('email'), current_time=datetime.utcnow())
 
+
+    
 
 def filter_type():
 
